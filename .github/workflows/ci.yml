@@ -1,25 +1,20 @@
 name: CI
 
 on:
+  push:
+    branches: [feature/*]
   pull_request:
-    branches:
-      - 'feature/*'
+    branches: [feature/*, main]
 
 jobs:
-  build:
+  nest-test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 20
-
-      - name: Install Node.js dependencies
-        run: npm ci
+      - name: Docker compose Build
+        run: docker-compose build
 
       - name: Start Docker Compose
         run: docker-compose up -d
