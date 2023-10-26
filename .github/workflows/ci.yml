@@ -9,6 +9,20 @@ on:
 jobs:
   nest-test:
     runs-on: ubuntu-latest
+    
+    env:
+      NODE_ENV: local
+      ALLOWED_ORIGIN: http://localhost:5173,http://127.0.0.1:5173
+      DATABASE_NAME: db
+      DATABASE_USER: admin
+      DATABASE_PASS: admin
+      DATABASE_URI: mongodb://database:27017
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin@database:27017
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
