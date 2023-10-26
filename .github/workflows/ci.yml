@@ -34,13 +34,13 @@ jobs:
         run: docker-compose up -d
 
       - name: Run Tests with Coverage using Docker Compose
-        run: docker-compose exec nest-app npm run test:cov
+        run: docker-compose run nest-app npm run test:cov
 
       - name: Run Format using Docker Compose
-        run: docker-compose exec nest-app npm run format
+        run: docker-compose run nest-app npm run format
 
       - name: Run Lint using Docker Compose
-        run: docker-compose exec nest-app npm run lint
+        run: docker-compose run nest-app npm run lint
 
       - name: Shut down Docker Compose
         run: docker-compose down
