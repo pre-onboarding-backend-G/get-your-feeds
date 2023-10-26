@@ -1,20 +1,49 @@
 version: '3.9'
+
+volumes:
+  mongodb: {}
+
 services:
   nest-app:
-    container_name: NestJS
+    container_name: get-your-feeds-NestJS
     build:
       context: .
       dockerfile: docker/local.Dockerfile
     ports:
       - '3000:3000'
-    # depends_on:
-    #   - database
-    # environment:
-    #   DATABASE_HOST: database
+    volumes:
+      - .:/app
+    env_file:
+      - .env.local
+    depends_on:
+      - database
+    networks:
+      - mynetwork
 
-  # database:
-  #   image: postgres
-  #   environment:
-  #     POSTGRES_DB: mydb
-  #     POSTGRES_USER: myuser
-  #     POSTGRES_PASSWORD: mypassword
+  # start the mongodb service as container
+  database:
+    image: mongo:latest
+    container_name: get-your-feeds-mongodb
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb:/data/db
+    env_file:
+      - .env.local
+    networks:
+      - mynetwork
+  
+  mongo-express:
+    image: mongo-express
+    container_name: get-your-feeds-mxpress
+    restart: always
+    ports:
+      - 8081:8081
+    env_file:
+      - .env.local
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
