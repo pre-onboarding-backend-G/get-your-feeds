@@ -1,15 +1,17 @@
-export const QueryPeriod = {
+export const ArticleStatisticsPeriod = {
   DATE: 'date',
   HOUR: 'hour',
 } as const;
 
-export type QueryPeriodType = (typeof QueryPeriod)[keyof typeof QueryPeriod];
+export type ArticleStatisticsPeriodType =
+  (typeof ArticleStatisticsPeriod)[keyof typeof ArticleStatisticsPeriod];
 
-export const QueryValue = {
+export const ArticleStatisticsValue = {
   COUNT: 'count',
   VIEW_COUNT: 'viewCount',
   LIKE_COUNT: 'likeCount',
   SHARE_COUNT: 'shareCount',
 };
 
-export type QueryValueType = (typeof QueryValue)[keyof typeof QueryValue];
+export type ArticleStatisticsValueType =
+  (typeof ArticleStatisticsValue)[keyof typeof ArticleStatisticsValue];

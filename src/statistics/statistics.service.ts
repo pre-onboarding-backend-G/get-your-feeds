@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { QueryPeriodType, QueryValueType } from './statistics.type';
-import { StatisticsModel } from './schema/statistics.model';
+import {
+  ArticleStatisticsPeriodType,
+  ArticleStatisticsValueType,
+} from './statistics.type';
+import { ArticleStatisticsModel } from './schema/article-statistics.model';
 
 /**
  * @author 명석
@@ -9,20 +12,24 @@ import { StatisticsModel } from './schema/statistics.model';
  */
 export type QueryType = {
   hashtag: string | string[];
-  type: QueryPeriodType;
+  type: ArticleStatisticsPeriodType;
   start: Date;
   end: Date;
-  value: QueryValueType;
+  value: ArticleStatisticsValueType;
 };
 
 @Injectable()
 export class StatisticsService {
-  constructor(private readonly statisticsModel: StatisticsModel) {}
+  constructor(
+    private readonly articleStatisticsModel: ArticleStatisticsModel,
+  ) {}
 
   async getArticleStatistics(dto: QueryType) {
     //todo dto의 hashtag 값이 있는지 검증하는 dto 메서드 추가
     //todo dto에 hashtag가 없을 경우 accountTag를 hashtag의 값으로 추가하는 메서드 추가
-    const data = await this.statisticsModel.getArticleStatistics(dto as any);
+    const data = await this.articleStatisticsModel.getArticleStatistics(
+      dto as any,
+    );
 
     return data;
   }
