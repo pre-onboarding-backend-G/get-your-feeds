@@ -9,8 +9,6 @@ export enum SnsType {
   Threads = 'threads',
 }
 
-//TODO: enum, timestamp
-
 export type ArticleDocument = HydratedDocument<Article>;
 
 @Schema({ timestamps: true, collection: 'articles' })
@@ -18,9 +16,8 @@ export class Article {
   @Prop({ type: String, default: generateNoDashUUID()})
   contentId: string;
 
-  // enum
   @Prop()
-  type: string;
+  type: SnsType;
 
   @Prop()
   title: string;
@@ -39,14 +36,6 @@ export class Article {
 
   @Prop()
   shareCount: number;
-
-  //timestamp
-  // {default: now()}
-  // @Prop()
-  // createdAt: Date;
-
-  // @Prop()
-  // updatedAt: Date;
 }
 
 export const ArticleSchema = SchemaFactory.createForClass(Article);
