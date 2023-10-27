@@ -1,13 +1,16 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Statistics, StatisticsDocument } from './statistics.schema';
+import {
+  ArticleStatistics,
+  ArticleStatisticsDocument,
+} from './article-statistics.schema';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class StatisticsModel {
+export class ArticleStatisticsModel {
   constructor(
-    @InjectModel(Statistics.name)
-    private statisticsModel: Model<StatisticsDocument>,
+    @InjectModel(ArticleStatistics.name)
+    private articleStatisticsModel: Model<ArticleStatisticsDocument>,
   ) {}
 
   /**
