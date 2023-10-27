@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { validate } from './common/env.validation';
 import { MongooseModule } from '@nestjs/mongoose';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         password: process.env.DATABASE_PASS,
       },
     }),
+    StatisticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
