@@ -2,19 +2,22 @@ import { Injectable } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Article } from './schema/article.schema';
+import * as mongoose from 'mongoose';
+import { Article, SnsType } from './schema/article.schema';
 
 @Injectable()
 export class ArticleService {
   constructor(
-    @InjectModel(Article.name) private articleModel: Model<Article>,
+    @InjectModel(Article.name)
+    private articleModel: mongoose.Model<Article>,
   ) {}
 
   // Common
 
-  create(createArticleDto: CreateArticleDto) {
-    return 'This action adds a new article';
+  async create(createArticleDto: CreateArticleDto): Promise<Article> {
+    const res = await this.articleModel.create(createArticleDto);
+    return res;
+    // return 'This action adds a new article';
   }
 
   update(id: number, updateArticleDto: UpdateArticleDto) {
@@ -31,9 +34,13 @@ export class ArticleService {
 
   // 연규님 Place
 
-  findAll() {
-    return `This action returns all article`;
+  async findAll(): Promise<Article[]> {
+    const articles = await this.articleModel.find();
+    return articles;
   }
+  // async findAll(): Promise<Cat[]> {
+  //   return this.catModel.find().exec스ㅐ);
+  // }
 
   /***************************************************
    * DMZ

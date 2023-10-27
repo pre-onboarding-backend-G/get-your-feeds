@@ -10,8 +10,10 @@ export class ArticleController {
   // Common
 
   @Post()
-  create(@Body() createArticleDto: CreateArticleDto) {
-    return this.articleService.create(createArticleDto);
+  async create(@Body() createArticleDto: CreateArticleDto) {
+    console.log(`createArticleDto: `)
+    console.log(createArticleDto)
+    return await this.articleService.create(createArticleDto);
   }
 
   @Patch(':id')
@@ -31,8 +33,8 @@ export class ArticleController {
   // 연규님 Place
 
   @Get()
-  findAll() {
-    return this.articleService.findAll();
+  async findAll() {
+    return await this.articleService.findAll();
   }
 
   // @Post()
