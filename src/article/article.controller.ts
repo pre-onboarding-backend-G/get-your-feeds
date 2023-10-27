@@ -6,12 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 
-@Controller('article')
+@Controller('articles')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
@@ -40,14 +41,23 @@ export class ArticleController {
   // 연규님 Place
 
   @Get()
-  async findAll() {
-    return await this.articleService.findAll();
+  getArticleList(): Promise<GetArticleDto[]> {
+    return this.articleService.getArticleList();
   }
 
-  // @Post()
-  // createLike() {
-  //   return ;
-  // }
+  @Get('/search')
+  findArticleListByQueryParam(
+    @Query() request: ArticleQueryParamDto,
+  ): Promise<GetArticleByQueryParamDto[]> {
+    return this.articleService.findArticleListByQueryParam(request);
+  }
+
+  @Post()
+  //TODO: uuid pipe
+  sendLike(contentId: string) {
+    //게시물 리턴
+    return;
+  }
 
   /***************************************************
    * DMZ
