@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -10,10 +18,9 @@ export class ArticleController {
   // Common
 
   @Post()
-  async create(@Body() createArticleDto: CreateArticleDto) {
-    console.log(`createArticleDto: `)
-    console.log(createArticleDto)
-    return await this.articleService.create(createArticleDto);
+  async create(@Body() request: CreateArticleDto): Promise<string> {
+    await this.articleService.create(request);
+    return 'success';
   }
 
   @Patch(':id')
@@ -28,7 +35,7 @@ export class ArticleController {
 
   /***************************************************
    * DMZ
-  ***************************************************/
+   ***************************************************/
 
   // 연규님 Place
 
@@ -44,7 +51,7 @@ export class ArticleController {
 
   /***************************************************
    * DMZ
-  ***************************************************/
+   ***************************************************/
 
   // 미종 Place
 

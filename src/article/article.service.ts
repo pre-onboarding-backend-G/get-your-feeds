@@ -14,10 +14,10 @@ export class ArticleService {
 
   // Common
 
-  async create(createArticleDto: CreateArticleDto): Promise<Article> {
-    const res = await this.articleModel.create(createArticleDto);
-    return res;
-    // return 'This action adds a new article';
+  async create(request: CreateArticleDto): Promise<Article> {
+    const res = new this.articleModel(request);
+    
+    return await res.save()
   }
 
   update(id: number, updateArticleDto: UpdateArticleDto) {
