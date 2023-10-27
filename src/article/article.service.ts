@@ -11,17 +11,10 @@ export class ArticleService {
     @InjectModel(Article.name) private articleModel: Model<Article>,
   ) {}
 
+  // Common
+
   create(createArticleDto: CreateArticleDto) {
-    
     return 'This action adds a new article';
-  }
-
-  findAll() {
-    return `This action returns all article`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} article`;
   }
 
   update(id: number, updateArticleDto: UpdateArticleDto) {
@@ -31,4 +24,25 @@ export class ArticleService {
   remove(id: number) {
     return `This action removes a #${id} article`;
   }
+
+  /***************************************************
+   * DMZ
+  ***************************************************/
+
+  // 연규님 Place
+
+  findAll() {
+    return `This action returns all article`;
+  }
+
+  /***************************************************
+   * DMZ
+  ***************************************************/
+
+  // 미종
+
+  findOne(id: number) {
+    return `This action returns a #${id} article`;
+  }
+
 }

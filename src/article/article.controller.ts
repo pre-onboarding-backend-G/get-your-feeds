@@ -7,19 +7,11 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
+  // Common
+
   @Post()
   create(@Body() createArticleDto: CreateArticleDto) {
     return this.articleService.create(createArticleDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.articleService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.articleService.findOne(+id);
   }
 
   @Patch(':id')
@@ -31,4 +23,36 @@ export class ArticleController {
   remove(@Param('id') id: string) {
     return this.articleService.remove(+id);
   }
+
+  /***************************************************
+   * DMZ
+  ***************************************************/
+
+  // 연규님 Place
+
+  @Get()
+  findAll() {
+    return this.articleService.findAll();
+  }
+
+  // @Post()
+  // createLike() {
+  //   return ;
+  // }
+
+  /***************************************************
+   * DMZ
+  ***************************************************/
+
+  // 미종 Place
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.articleService.findOne(+id);
+  }
+
+  // @Post()
+  // createShare() {
+  //   return ;
+  // }
 }
