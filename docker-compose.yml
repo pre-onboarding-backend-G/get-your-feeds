@@ -13,12 +13,17 @@ services:
       - '3000:3000'
     volumes:
       - .:/app
-    env_file:
-      - .env.local
     depends_on:
       - database
     networks:
       - mynetwork
+    environment:
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASS: ${DATABASE_PASS}
+      DATABASE_URI: ${DATABASE_URI}
+      NODE_ENV: ${NODE_ENV}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
 
   # start the mongodb service as container
   database:
@@ -29,10 +34,11 @@ services:
       - '27017:27017'
     volumes:
       - mongodb:/data/db
-    env_file:
-      - .env.local
     networks:
       - mynetwork
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
   
   mongo-express:
     image: mongo-express
@@ -40,10 +46,12 @@ services:
     restart: always
     ports:
       - 8081:8081
-    env_file:
-      - .env.local
     networks:
       - mynetwork
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${ME_CONFIG_MONGODB_ADMINUSERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${ME_CONFIG_MONGODB_ADMINPASSWORD}
+      ME_CONFIG_MONGODB_URL: ${ME_CONFIG_MONGODB_URL}
 
 networks:
   mynetwork:
