@@ -94,4 +94,30 @@ describe('ArticleService', () => {
       });
     })
   });
+
+  describe('sendShareByContentId', () => {
+
+    it('should find and share', async () => {
+      jest.spyOn(model, 'findOne').mockResolvedValue(mockArticle);
+
+      const result = await articleService.sendShareByContentId(mockArticle.contentId);
+
+      expect(model.findOne).toHaveBeenCalledWith({
+        contentId: mockArticle.contentId
+      });
+      expect(result).toEqual(undefined);
+    })
+
+    it('should throw NotFoundException if article is not found', async () => {
+      jest.spyOn(model, 'findOne').mockResolvedValue(null);
+
+      await expect(articleService.findOneByContentId(mockArticle.contentId)).rejects.toThrow(
+        NotFoundException,
+      );
+
+      expect(model.findOne).toHaveBeenCalledWith({
+        contentId: mockArticle.contentId
+      });
+    })
+  });
 });
