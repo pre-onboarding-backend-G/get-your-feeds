@@ -11,8 +11,8 @@ import { ArticleStatisticsModel } from './schema/article-statistics.model';
  * @todo dto 작성 이후 삭제
  */
 export type QueryType = {
-  hashtag: string | string[];
-  type: ArticleStatisticsPeriodType;
+  hashtag: string[];
+  periodType: ArticleStatisticsPeriodType;
   start: Date;
   end: Date;
   value: ArticleStatisticsValueType;
