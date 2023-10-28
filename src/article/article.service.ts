@@ -14,10 +14,9 @@ export class ArticleService {
 
   // Common
 
-  async create(createArticleDto: CreateArticleDto): Promise<Article> {
-    const res = await this.articleModel.create(createArticleDto);
-    return res;
-    // return 'This action adds a new article';
+  async create(request: CreateArticleDto): Promise<Article> {
+    const res = new this.articleModel(request);
+    return await res.save()
   }
 
   update(id: number, updateArticleDto: UpdateArticleDto) {
@@ -30,7 +29,7 @@ export class ArticleService {
 
   /***************************************************
    * DMZ
-  ***************************************************/
+   ***************************************************/
 
   // 연규님 Place
 
@@ -38,18 +37,33 @@ export class ArticleService {
     const articles = await this.articleModel.find();
     return articles;
   }
+  
+  async findArticleListByQueryParam(
+    request: ArticleQueryParamDto,
+  ): Promise<void> {
+    return;
+  }
+
+  async getArticleList(): Promise<void> {
+    return ;
+  }
+
+  async sendLikeByContentId(contentId: string): Promise<void> {
+    //TODO: contentID를 가져와서 게시물 타입에 따라 도메인으로 요청 보내기
+    // 해당 게시물에 좋아요 + 1 추가해서 Article에 저장
+    return ;
+  }
   // async findAll(): Promise<Cat[]> {
   //   return this.catModel.find().exec스ㅐ);
   // }
 
   /***************************************************
    * DMZ
-  ***************************************************/
+   ***************************************************/
 
   // 미종
 
   findOne(id: number) {
     return `This action returns a #${id} article`;
   }
-
 }

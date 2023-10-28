@@ -1,19 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 
-@Controller('article')
+@Controller('articles')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
   // Common
 
   @Post()
-  async create(@Body() createArticleDto: CreateArticleDto) {
-    console.log(`createArticleDto: `)
-    console.log(createArticleDto)
-    return await this.articleService.create(createArticleDto);
+  async create(@Body() request: CreateArticleDto): Promise<string> {
+    await this.articleService.create(request);
+    return 'success';
   }
 
   @Patch(':id')
@@ -28,23 +36,32 @@ export class ArticleController {
 
   /***************************************************
    * DMZ
-  ***************************************************/
+   ***************************************************/
 
   // 연규님 Place
 
   @Get()
-  async findAll() {
-    return await this.articleService.findAll();
+  getArticleList(): Promise<GetArticleDto[]> {
+    return this.articleService.getArticleList();
   }
 
-  // @Post()
-  // createLike() {
-  //   return ;
-  // }
+  @Get('/search')
+  findArticleListByQueryParam(
+    @Query() request: ArticleQueryParamDto,
+  ): Promise<GetArticleByQueryParamDto[]> {
+    return this.articleService.findArticleListByQueryParam(request);
+  }
+
+  @Post()
+  //TODO: uuid pipe
+  sendLike(contentId: string) {
+    //게시물 리턴
+    return;
+  }
 
   /***************************************************
    * DMZ
-  ***************************************************/
+   ***************************************************/
 
   // 미종 Place
 
