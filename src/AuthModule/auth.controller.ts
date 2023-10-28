@@ -132,6 +132,25 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  /**
+   * 다른 기능에서 JWT를 검증하고 싶을 때
+   *    - YOUR_CODE에 JWT 인증이 필요한 기능을 구현
+   *    - 사용자 이메일 추출 가능
+   */
+  @Post('YOUR_PATH')
+  YOUR_FUNCTION(@Headers('authorization') rawToken: string) {
+    const token = this.authService.extractTokenFromHeader(rawToken, true);
+
+    const payload = this.authService.verifyToken(token);
+
+    // YOUR_CODE : JWT 인증이 필요한 기능
+
+    // 사용자 이메일 추출 가능
+    const userEmail = payload.email;
+
+    return;
+  }
+
   @Post('token/access')
   postTokenAccess(@Headers('authorization') rawToken: string) {
     const token = this.authService.extractTokenFromHeader(rawToken, true);
