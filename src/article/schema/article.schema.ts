@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, now } from 'mongoose';
-import { generateNoDashUUID } from 'src/common/util/uuid.util';
+import { HydratedDocument } from 'mongoose';
+import { generateNoDashUUID } from '../../common/util/uuid.util';
 
 export enum SnsType {
   Facebook = 'facebook',
@@ -13,7 +13,7 @@ export type ArticleDocument = HydratedDocument<Article>;
 
 @Schema({ timestamps: true, collection: 'articles' })
 export class Article {
-  @Prop({ type: String, default: generateNoDashUUID()})
+  @Prop({ type: 'String', default: () => generateNoDashUUID()})
   contentId: string;
 
   @Prop()
@@ -39,4 +39,3 @@ export class Article {
 }
 
 export const ArticleSchema = SchemaFactory.createForClass(Article);
-
