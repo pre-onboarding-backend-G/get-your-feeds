@@ -14,7 +14,7 @@ import { ApiBody, ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Response } from 'express';
 import { TempUser, TempUserDocument } from './tempSchema/tempUser.model';
-import { GetUser } from './decoraters/user.decorator';
+import { GetUser } from './decorators/user.decorator';
 
 @ApiTags('auth')
 @Controller('auth')
