@@ -11,6 +11,7 @@ async function bootstrap(): Promise<void> {
     .setTitle('Example API')
     .setDescription('The Example API description')
     .setVersion('1.0')
+    .addTag('statistics')
     .addBearerAuth(
       {
         type: 'http',
