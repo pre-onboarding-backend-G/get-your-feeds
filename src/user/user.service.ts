@@ -41,4 +41,8 @@ export class UserService {
 
     return newUser;
   }
+
+  async getUserByEmail(email: string) {
+    return this.userModel.findOne({ email });
+  }
 }

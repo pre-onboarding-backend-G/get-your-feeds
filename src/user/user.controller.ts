@@ -1,5 +1,13 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { UserService } from './user.service';
+import { get } from 'http';
 
 @Controller('user')
 export class UserController {
@@ -16,5 +24,12 @@ export class UserController {
     await this.userService.createUser(email, password, service, userHashtag);
 
     return;
+  }
+
+  @Get()
+  async getUserByEmail(@Body('email') email: string) {
+    const existingUser = await this.userService.getUserByEmail(email);
+
+    return existingUser.email;
   }
 }
