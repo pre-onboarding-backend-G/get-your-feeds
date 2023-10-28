@@ -15,10 +15,11 @@ async function bootstrap() {
       {
         type: 'http',
         scheme: 'bearer',
-        name: 'JWT',
-        in: 'query',
+        name: 'authorization',
+        in: 'header',
+        bearerFormat: 'JWT',
       },
-      'access-token',
+      'accessToken',
     )
     .build();
 

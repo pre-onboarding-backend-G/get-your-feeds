@@ -2,6 +2,7 @@ import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../auth.service';
+import { TempUser } from '../tempSchema/tempUser.model';
 
 /**
  * `LocalStrategy` 클래스는 Passport의 `Strategy`를 확장하여 로컬 인증 전략을 정의하는 클래스입니다.
@@ -21,7 +22,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(email: string, password: string): Promise<any> {
+  async validate(email: string, password: string): Promise<TempUser> {
     const user = await this.authService.validateUser(email, password);
     if (!user) {
       throw new UnauthorizedException();
