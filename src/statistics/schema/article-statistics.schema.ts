@@ -8,6 +8,10 @@ import {
 
 export type ArticleStatisticsDocument = HydratedDocument<ArticleStatistics>;
 
+/**
+ * @author 명석
+ * @todo 인덱싱 적용 후 주석 삭제
+ */
 @Schema({ timestamps: true })
 export class ArticleStatistics {
   @Prop({ required: true, type: String })
