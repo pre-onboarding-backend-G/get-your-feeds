@@ -12,6 +12,7 @@ import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { GetArticleDetailResDto } from './dto/get-article-detail-res.dto';
+import { CreateArticleShareDto } from './dto/create-article-share.dto';
 
 @Controller('articles')
 export class ArticleController {
@@ -71,5 +72,12 @@ export class ArticleController {
     @Param('contentId') contentId: string
   ): Promise<GetArticleDetailResDto> {
     return await this.articleService.findOneByContentId(contentId);
+  }
+
+  @Post('share')
+  async sendShare(
+    @Body() dto: CreateArticleShareDto
+  ) {
+    return await this.articleService.sendShareByContentId(dto.contentId);
   }
 }
