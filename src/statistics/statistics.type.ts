@@ -3,6 +3,10 @@ export const ArticleStatisticsPeriod = {
   HOUR: 'hour',
 } as const;
 
+export const ArticleStatisticsPeriods = Object.freeze(
+  Object.values(ArticleStatisticsPeriod),
+);
+
 export type ArticleStatisticsPeriodType =
   (typeof ArticleStatisticsPeriod)[keyof typeof ArticleStatisticsPeriod];
 
@@ -12,6 +16,10 @@ export const ArticleStatisticsValue = {
   LIKE_COUNT: 'likeCount',
   SHARE_COUNT: 'shareCount',
 } as const;
+
+export const ArticleStatisticsValues = Object.freeze(
+  Object.values(ArticleStatisticsValue),
+);
 
 export type ArticleStatisticsValueType =
   (typeof ArticleStatisticsValue)[keyof typeof ArticleStatisticsValue];
