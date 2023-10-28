@@ -56,6 +56,8 @@
 
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -69,7 +71,22 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly usersService: UserService,
     private readonly configService: ConfigService,
+    private readonly blacklist: string[] = [],
   ) {}
+
+  checkTokenBlacklist(token: string, payload: any) {
+    if (payload.type === 'access') {
+      const isInBlacklist = this.blacklist.includes(token);
+
+      if (isInBlacklist)
+        throw new HttpException('무효화된 토큰 입니다', HttpStatus.FORBIDDEN);
+    }
+  }
+
+  invalidateAccessToken(token: string) {
+    this.blacklist.push(token);
+    return;
+  }
 
   /**
    * 요청 헤더에서 토큰을 추출.
@@ -136,6 +153,7 @@ export class AuthService {
     const payload = this.jwtService.verify(token, {
       secret: jwtSecret,
     });
+
     return payload;
   }
 

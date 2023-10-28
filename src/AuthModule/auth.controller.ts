@@ -125,7 +125,7 @@
 
 ///////////////////////////////////////////////////////////////////
 
-import { Body, Controller, Post, Headers } from '@nestjs/common';
+import { Body, Controller, Post, Headers, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -143,10 +143,24 @@ export class AuthController {
 
     const payload = this.authService.verifyToken(token);
 
-    // YOUR_CODE : JWT 인증이 필요한 기능
+    this.authService.checkTokenBlacklist(token, payload);
+
+    /**
+     * YOUR_CODE : JWT 인증이 필요한 기능
+     */
 
     // 사용자 이메일 추출 가능
     const userEmail = payload.email;
+
+    return;
+  }
+
+  @Post('token/blacklist')
+  @HttpCode(201)
+  invalidateAccessToken(@Headers('authorization') rawToken: string) {
+    const token = this.authService.extractTokenFromHeader(rawToken, true);
+
+    this.authService.invalidateAccessToken(token);
 
     return;
   }
