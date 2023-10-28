@@ -62,11 +62,13 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcryptjs';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly usersService: UserService,
+    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -130,8 +132,9 @@ export class AuthService {
    * @author SangUn Lee
    */
   verifyToken(token: string) {
+    const jwtSecret = this.configService.get<string>('JWT_SECRET_KEY');
     const payload = this.jwtService.verify(token, {
-      secret: 'JWT_SECRET_KEY',
+      secret: jwtSecret,
     });
     return payload;
   }
@@ -147,8 +150,9 @@ export class AuthService {
    * @author SangUn Lee
    */
   rotateToken(token: string, isRefreshToken: boolean) {
+    const jwtSecret = this.configService.get<string>('JWT_SECRET_KEY');
     const payload = this.jwtService.verify(token, {
-      secret: 'JWT_SECRET_KEY',
+      secret: jwtSecret,
     });
     if (payload.type !== 'refresh')
       throw new UnauthorizedException('토큰 재발급은 refresh 토큰으로만 가능');
@@ -171,13 +175,14 @@ export class AuthService {
    * @author SangUn Lee
    */
   signToken(email: string, id: number, isRefreshToken: boolean) {
+    const jwtSecret = this.configService.get<string>('JWT_SECRET_KEY');
     const payload = {
       email: email,
       sub: id,
       type: isRefreshToken ? 'refresh' : 'access',
     };
     return this.jwtService.sign(payload, {
-      secret: 'JWT_SECRET_KEY',
+      secret: jwtSecret,
       expiresIn: isRefreshToken ? 36000 : 3600,
     });
   }
