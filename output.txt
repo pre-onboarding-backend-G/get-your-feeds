@@ -1,0 +1,47 @@
+.
+├── README.md
+├── docker
+│   └── local.Dockerfile
+├── docker-compose.yml
+├── nest-cli.json
+├── package-lock.json
+├── package.json
+├── src
+│   ├── AuthModule
+│   │   ├── auth.controller.ts
+│   │   ├── auth.module.ts
+│   │   ├── auth.service.spec.ts
+│   │   ├── auth.service.ts
+│   │   ├── decoraters
+│   │   │   └── user.decorator.ts
+│   │   ├── guards
+│   │   │   ├── jwt-auth.guard.spec.ts
+│   │   │   ├── jwt-auth.guard.ts
+│   │   │   ├── local-auth.guard.spec.ts
+│   │   │   └── local-auth.guard.ts
+│   │   ├── strategies
+│   │   │   ├── jwt.strategy.spec.ts
+│   │   │   ├── jwt.strategy.ts
+│   │   │   ├── local.strategy.spec.ts
+│   │   │   └── local.strategy.ts
+│   │   ├── tempSchema
+│   │   │   ├── tempUser.model.ts
+│   │   │   └── tempUser.module.ts
+│   │   └── types
+│   │       └── jwt-payload.interface.ts
+│   ├── app.controller.spec.ts
+│   ├── app.controller.ts
+│   ├── app.module.ts
+│   ├── app.service.ts
+│   ├── common
+│   │   ├── env.validation.ts
+│   │   └── filter
+│   │       └── http-exception.filter.ts
+│   └── main.ts
+├── test
+│   ├── app.e2e-spec.ts
+│   └── jest-e2e.json
+├── tsconfig.build.json
+└── tsconfig.json
+
+11 directories, 33 files
