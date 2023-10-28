@@ -120,7 +120,9 @@ export class AuthService {
   }
 
   /**
-   * JWT가 정상인 경우 payload를 반환.
+   * JWT 검증.
+   *    - JWT가 정상인 경우 payload를 반환
+   *    - payload : email, id, tokenType(access | refresh)
    *
    * @param token
    * @returns payload
