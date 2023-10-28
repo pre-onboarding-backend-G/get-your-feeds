@@ -39,7 +39,7 @@ export class ArticleService {
   }
   
   async findArticleListByQueryParam(
-    request: ArticleQueryParamDto,
+    request: any //ArticleQueryParamDto,
   ): Promise<void> {
     return;
   }

@@ -41,14 +41,14 @@ export class ArticleController {
   // 연규님 Place
 
   @Get()
-  getArticleList(): Promise<GetArticleDto[]> {
-    return this.articleService.getArticleList();
+  async getArticleList(): Promise<void> { // GetArticleDto[]
+    // return this.articleService.getArticleList();
   }
 
   @Get('/search')
-  findArticleListByQueryParam(
-    @Query() request: ArticleQueryParamDto,
-  ): Promise<GetArticleByQueryParamDto[]> {
+  findArticleListByQueryParam( //ArticleQueryParamDto
+    @Query() request:any ,
+  ): Promise<void> { // GetArticleByQueryParamDto[]
     return this.articleService.findArticleListByQueryParam(request);
   }
 
