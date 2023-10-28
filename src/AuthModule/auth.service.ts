@@ -67,11 +67,12 @@ import * as bcrypt from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {
+  private readonly blacklist: string[] = [];
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly usersService: UserService,
     private readonly configService: ConfigService,
-    private readonly blacklist: string[] = [],
   ) {}
 
   checkTokenBlacklist(token: string, payload: any) {
