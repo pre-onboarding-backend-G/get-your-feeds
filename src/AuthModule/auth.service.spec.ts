@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { TempUserDocument } from './tempSchema/tempUser.model';
+import { User } from 'src/user/schema/user.schema';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -18,7 +18,7 @@ describe('AuthService', () => {
           },
         },
         {
-          provide: 'TempUserModel',
+          provide: 'UserModel',
           useValue: jest.fn(),
         },
       ],
@@ -30,7 +30,7 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('로그인이 되면, JWT 토큰을 반환합니다', async () => {
-      const user = { _id: '123' } as TempUserDocument;
+      const user = { _id: '123' } as User;
 
       const token = await authService.login(user);
 

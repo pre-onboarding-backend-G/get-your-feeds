@@ -1,29 +1,40 @@
-// import { Module } from '@nestjs/common';
-// import { PassportModule } from '@nestjs/passport';
-// import { JwtModule } from '@nestjs/jwt';
-// import { JwtStrategy } from './strategies/jwt.strategy';
-// import { AuthService } from './auth.service';
-// import { AuthController } from './auth.controller';
-// import { LocalStrategy } from './strategies/local.strategy';
-// import { UserModule } from 'src/user/user.module';
-
-// @Module({
-//   imports: [PassportModule, JwtModule.register({}), UserModule],
-//   providers: [AuthService, JwtStrategy, LocalStrategy],
-//   exports: [AuthService],
-//   controllers: [AuthController],
-// })
-// export class AuthModule {}
-
 import { Module } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './strategies/jwt.strategy';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { JwtModule } from '@nestjs/jwt';
+import { LocalStrategy } from './strategies/local.strategy';
 import { UserModule } from 'src/user/user.module';
 
 @Module({
-  imports: [JwtModule.register({}), UserModule],
+  imports: [
+    PassportModule,
+    JwtModule.registerAsync({
+      useFactory: async () => {
+        return {
+          secret: process.env.JWT_SECRET,
+          signOptions: { expiresIn: '3600s' },
+        };
+      },
+    }),
+    UserModule,
+  ],
+  providers: [AuthService, JwtStrategy, LocalStrategy],
+  exports: [AuthService],
   controllers: [AuthController],
-  providers: [AuthService],
 })
 export class AuthModule {}
+
+// import { Module } from '@nestjs/common';
+// import { AuthService } from './auth.service';
+// import { AuthController } from './auth.controller';
+// import { JwtModule } from '@nestjs/jwt';
+// import { UserModule } from 'src/user/user.module';
+
+// @Module({
+//   imports: [JwtModule.register({}), UserModule],
+//   controllers: [AuthController],
+//   providers: [AuthService],
+// })
+// export class AuthModule {}

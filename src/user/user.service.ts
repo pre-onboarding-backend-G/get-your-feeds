@@ -1,13 +1,11 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { User } from './schema/user.schema';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @Inject('User')
-    private readonly userModel: Model<User>,
-  ) {}
+  constructor(@InjectModel('User') private userModel: Model<User>) {}
 
   async createUser(
     email: string,
