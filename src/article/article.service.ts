@@ -89,4 +89,23 @@ export class ArticleService {
     };
     return ret;
   }
+
+  async sendShareByContentId(
+    contentId: string
+  ): Promise<void> {
+    let foundArticle: ArticleDocument = await this.articleModel.findOne({
+      contentId: contentId
+    });
+    if (foundArticle === null) {
+      throw new NotFoundException(`Article not found.`);
+    }
+    let endpontToReq: string 
+      = "https://www." + foundArticle.type 
+      + ".com/share/" + contentId;
+    // NOTE : HTTP Module 이용해서 endpointToReq으로 호출하고 성공했다고 가정 (response status 200)
+    endpontToReq;
+    foundArticle.shareCount += 1;
+    foundArticle = await foundArticle.save();
+    return ;
+  }
 }
