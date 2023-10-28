@@ -15,5 +15,6 @@ import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
       inject: [getConnectionToken()],
     },
   ],
+  exports: [UserService],
 })
 export class UserModule {}
