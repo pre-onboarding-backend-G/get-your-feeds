@@ -3,7 +3,7 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
-import { Article, SnsType } from './schema/article.schema';
+import { Article, ArticleDocument, SnsType } from './schema/article.schema';
 import { GetArticleDetailResDto } from './dto/get-article-detail-res.dto';
 
 @Injectable()
@@ -68,24 +68,24 @@ export class ArticleService {
     contentId: string
   ): Promise<GetArticleDetailResDto> {
     let ret: GetArticleDetailResDto;
-    let res = await this.articleModel.findOne({
+    let foundArticle: ArticleDocument = await this.articleModel.findOne({
       contentId: contentId
     });
-    if (res === null) {
+    if (foundArticle === null) {
       throw new NotFoundException(`Article not found.`);
     }
-    console.log(res);
-    res.viewCount += 1;
-    res = await res.save();
+    // console.log(foundArticle);
+    foundArticle.viewCount += 1;
+    foundArticle = await foundArticle.save();
     ret = {
-      contentId: res.contentId,
-      title: res.title,
-      type: res.type,
-      content: res.content,
-      hashtags: res.hashtags,
-      viewCount: res.viewCount,
-      likeCount: res.likeCount,
-      shareCount: res.shareCount,
+      contentId: foundArticle.contentId,
+      title: foundArticle.title,
+      type: foundArticle.type,
+      content: foundArticle.content,
+      hashtags: foundArticle.hashtags,
+      viewCount: foundArticle.viewCount,
+      likeCount: foundArticle.likeCount,
+      shareCount: foundArticle.shareCount,
     };
     return ret;
   }
