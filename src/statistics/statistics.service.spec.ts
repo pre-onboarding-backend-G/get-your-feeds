@@ -42,8 +42,8 @@ describe('StatisticsService', () => {
   describe('getArticleStatistics', () => {
     it('SUCCESS: "일자별(date)" "게시물 수(count)" 요청 시, 일자별 게시물 수 데이터를 리턴', async () => {
       const mockDto: QueryType = {
-        hashtag: '이명석',
-        type: ArticleStatisticsPeriod.DATE,
+        hashtag: ['이명석'],
+        periodType: ArticleStatisticsPeriod.DATE,
         start: new Date('2023-10-01T00:00:00Z'),
         end: new Date('2023-10-27T00:23:59Z'),
         value: ArticleStatisticsValue.COUNT,
@@ -70,8 +70,8 @@ describe('StatisticsService', () => {
 
     it('SUCCESS: "일자별(date)" "게시물 조회 수(viewCount)" 요청 시, 일자별 게시물 조회 수 데이터를 리턴 ', async () => {
       const mockDto: QueryType = {
-        hashtag: '이명석',
-        type: ArticleStatisticsPeriod.DATE,
+        hashtag: ['이명석'],
+        periodType: ArticleStatisticsPeriod.DATE,
         start: new Date('2023-10-01T00:00:00Z'),
         end: new Date('2023-10-27T00:23:59Z'),
         value: ArticleStatisticsValue.VIEW_COUNT,
@@ -98,8 +98,8 @@ describe('StatisticsService', () => {
 
     it('SUCCESS: "일자별(date)" "게시물 좋아요 수(likeCount)" 요청 시, 일자별 게시물 좋아요 수 데이터를 리턴', async () => {
       const mockDto: QueryType = {
-        hashtag: '이명석',
-        type: ArticleStatisticsPeriod.DATE,
+        hashtag: ['이명석'],
+        periodType: ArticleStatisticsPeriod.DATE,
         start: new Date('2023-10-01T00:00:00Z'),
         end: new Date('2023-10-27T00:23:59Z'),
         value: ArticleStatisticsValue.LIKE_COUNT,
@@ -126,8 +126,8 @@ describe('StatisticsService', () => {
 
     it('SUCCESS: "일자별" "게시물 공유 수(shareCount)" 요청 시, 일자별 게시물 공유 수 데이터를 리턴', async () => {
       const mockDto: QueryType = {
-        hashtag: '이명석',
-        type: ArticleStatisticsPeriod.DATE,
+        hashtag: ['이명석'],
+        periodType: ArticleStatisticsPeriod.DATE,
         start: new Date('2023-10-01T00:00:00Z'),
         end: new Date('2023-10-27T00:23:59Z'),
         value: ArticleStatisticsValue.SHARE_COUNT,
@@ -154,8 +154,8 @@ describe('StatisticsService', () => {
 
     it('SUCCESS: "시간별(hour)" "게시물 수(count)" 요청 시, 시간별 게시물 수 데이터를 리턴', async () => {
       const mockDto: QueryType = {
-        hashtag: '이명석',
-        type: ArticleStatisticsPeriod.HOUR,
+        hashtag: ['이명석'],
+        periodType: ArticleStatisticsPeriod.HOUR,
         start: new Date('2023-10-01T00:00:00Z'),
         end: new Date('2023-10-27T00:00:00Z'),
         value: ArticleStatisticsValue.COUNT,
@@ -182,8 +182,8 @@ describe('StatisticsService', () => {
 
     it('SUCCESS: "시간별(hour)" "게시물 조회 수(viewCount)" 요청 시, 시간별 게시물 조회 수 데이터를 리턴 ', async () => {
       const mockDto: QueryType = {
-        hashtag: '이명석',
-        type: ArticleStatisticsPeriod.HOUR,
+        hashtag: ['이명석'],
+        periodType: ArticleStatisticsPeriod.HOUR,
         start: new Date('2023-10-01T00:00:00Z'),
         end: new Date('2023-10-27T00:00:00Z'),
         value: ArticleStatisticsValue.VIEW_COUNT,
@@ -210,8 +210,8 @@ describe('StatisticsService', () => {
 
     it('SUCCESS: "시간별(hour)" "게시물 좋아요 수(likeCount)" 요청 시, 시간별 게시물 좋아요 수 데이터를 리턴', async () => {
       const mockDto: QueryType = {
-        hashtag: '이명석',
-        type: ArticleStatisticsPeriod.HOUR,
+        hashtag: ['이명석'],
+        periodType: ArticleStatisticsPeriod.HOUR,
         start: new Date('2023-10-01T00:00:00Z'),
         end: new Date('2023-10-27T00:00:00Z'),
         value: ArticleStatisticsValue.LIKE_COUNT,
@@ -238,8 +238,8 @@ describe('StatisticsService', () => {
 
     it('SUCCESS: "시간별(hour)" "게시물 공유 수(shareCount)" 요청 시, 시간별 게시물 공유 수 데이터를 리턴', async () => {
       const mockDto: QueryType = {
-        hashtag: '이명석',
-        type: ArticleStatisticsPeriod.HOUR,
+        hashtag: ['이명석'],
+        periodType: ArticleStatisticsPeriod.HOUR,
         start: new Date('2023-10-01T00:00:00Z'),
         end: new Date('2023-10-27T00:00:00Z'),
         value: ArticleStatisticsValue.SHARE_COUNT,
