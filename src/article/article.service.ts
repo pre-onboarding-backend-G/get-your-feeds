@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Article, SnsType } from './schema/article.schema';
+import { GetArticleDetailResDto } from './dto/get-article-detail-res.dto';
 
 @Injectable()
 export class ArticleService {
@@ -61,9 +62,31 @@ export class ArticleService {
    * DMZ
    ***************************************************/
 
-  // 미종
+  // 미종 Place
 
-  findOne(id: number) {
-    return `This action returns a #${id} article`;
+  async findOneByContentId(
+    contentId: string
+  ): Promise<GetArticleDetailResDto> {
+    let ret: GetArticleDetailResDto;
+    let res = await this.articleModel.findOne({
+      contentId: contentId
+    });
+    if (res === null) {
+      throw new NotFoundException(`Article not found.`);
+    }
+    console.log(res);
+    res.viewCount += 1;
+    res = await res.save();
+    ret = {
+      contentId: res.contentId,
+      title: res.title,
+      type: res.type,
+      content: res.content,
+      hashtags: res.hashtags,
+      viewCount: res.viewCount,
+      likeCount: res.likeCount,
+      shareCount: res.shareCount,
+    };
+    return ret;
   }
 }
