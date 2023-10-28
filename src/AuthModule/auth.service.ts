@@ -1,51 +1,55 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, Res, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-// import { InjectModel } from '@nestjs/mongoose';
-// import { Model } from 'mongoose';
-// import { User } from './user.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { TempUser, TempUserDocument } from './tempSchema/tempUser.model';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private jwtService: JwtService, // @InjectModel(User.name) private userModel: Model<User>,
+    private jwtService: JwtService,
+    @InjectModel(TempUser.name) private tempUserModel: Model<TempUserDocument>,
   ) {}
 
-  //
-  private readonly users = [
-    {
-      userId: '1',
-      username: 'Mizong',
-    },
-    {
-      userId: '2',
-      username: 'MS',
-    },
-  ];
+  /**
+   * `login` 메서드는 주어진 사용자 정보를 사용하여 JWT 토큰을 생성합니다.
+   * 생성된 토큰은 클라이언트에게 전달되어 인증에 사용됩니다.
+   *
+   * @param {TempUserDocument} user - 로그인할 사용자의 Mongoose 문서 객체
+   * @returns {Promise<string>} - 생성된 JWT 토큰
+   *
+   * @author Hojun Song
+   */
 
-  //   async validateUser(userId: string): Promise<any> {
-  //     const user = await this.userModel.findById(userId);
-  //     if (user) {
-  //       return user;
-  //     }
-  //     return null;
-  //   }
+  async login(user: TempUserDocument): Promise<string> {
+    const userIdAsString = user._id.toString();
+    const payload = { sub: userIdAsString };
+    return this.jwtService.sign(payload);
+  }
 
-  async validateUser(userId: string): Promise<any> {
-    const user = this.users.find((u) => u.userId === userId);
-    if (user) {
+  async validateUser(
+    email: string,
+    pass: string,
+  ): Promise<TempUserDocument | null> {
+    const user = await this.tempUserModel.findOne({ email });
+    if (user && user.password === pass) {
+      //const isMatch = await bcrypt.compare(pass, user.password);와 같은 비밀번호 검증 로직 추가
       return user;
     }
     return null;
   }
 
-  async login(userId: string) {
-    const user = await this.validateUser(userId);
-    if (!user) {
-      return null;
+  async tempRegister(
+    email: string,
+    password: string,
+  ): Promise<TempUserDocument> {
+    const existingUser = await this.tempUserModel.findOne({ email });
+    if (existingUser) {
+      throw new ConflictException('이미 존재하는 이메일입니다.');
     }
-    const payload = { sub: user.userId, username: user.username };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+
+    const createdUser = new this.tempUserModel({ email, password });
+    await createdUser.save();
+    return createdUser;
   }
 }
