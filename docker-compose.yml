@@ -11,8 +11,13 @@ services:
       dockerfile: docker/local.Dockerfile
     ports:
       - '3000:3000'
+      #debugging port
+      - '9229:9229'
     volumes:
-      - .:/app
+      - .:/usr/src/app
+    # npm run start
+    # npm run start:debug -> this is debugging mode
+    command: npm run start
     depends_on:
       - database
     networks:
