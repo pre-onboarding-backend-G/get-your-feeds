@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { validate } from './common/env.validation';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AuthModule } from './AuthModule/auth.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         password: process.env.DATABASE_PASS,
       },
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
