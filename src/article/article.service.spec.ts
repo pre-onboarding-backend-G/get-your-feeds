@@ -81,5 +81,17 @@ describe('ArticleService', () => {
       });
       expect(result).toEqual(mockArticleRes);
     })
+
+    it('should throw NotFoundException if article is not found', async () => {
+      jest.spyOn(model, 'findOne').mockResolvedValue(null);
+
+      await expect(articleService.findOneByContentId(mockArticle.contentId)).rejects.toThrow(
+        NotFoundException,
+      );
+
+      expect(model.findOne).toHaveBeenCalledWith({
+        contentId: mockArticle.contentId
+      });
+    })
   });
 });
