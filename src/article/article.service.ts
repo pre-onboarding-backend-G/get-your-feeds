@@ -1,57 +1,116 @@
 import { Injectable } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
-import { Article, SnsType } from './schema/article.schema';
+import { Article } from './schema/article.schema';
+import { getRandomInt } from '../common/util/random-int.util';
+import { Model } from 'mongoose';
+import { plainToClass } from 'class-transformer';
+import { GetArticleQueryResDto, GetArticleResDto } from './dto/get-article-res.dto';
+import { Page } from '../common/page';
+import { GetArticleDto } from './dto/get-article.dto';
 
 @Injectable()
 export class ArticleService {
   constructor(
     @InjectModel(Article.name)
-    private articleModel: mongoose.Model<Article>,
-  ) {}
+    private articleModel: Model<Article>,
+  ) { }
 
-  // Common
+  /**
+  * @author Yeon Kyu
+  * @email suntail2002@naver.com
+  * @create date 2023-10-28 13:44:24
+  * @modify date 2023-10-28 13:44:24
+  * @desc [description]
+  */
+  async createArticle(request: CreateArticleDto): Promise<Article> {
+    const viewCount = getRandomInt(1, 100);
+    const likeCount = getRandomInt(0, 100);
+    const shareCount = getRandomInt(0, 100);
 
-  async create(request: CreateArticleDto): Promise<Article> {
-    const res = new this.articleModel(request);
-    return await res.save()
+    return await this.articleModel.create({
+      ...request,
+      viewCount,
+      likeCount,
+      shareCount
+    });
   }
 
-  update(id: number, updateArticleDto: UpdateArticleDto) {
-    return `This action updates a #${id} article`;
+  async getArticleList(page: number, perPage: number): Promise<Page<GetArticleResDto>> {
+    const startIndex = (page - 1) * perPage;
+
+    const [totalArticleCount, articles] = await Promise.all([
+      this.articleModel.countDocuments({}),
+      this.articleModel
+        .find({})
+        .sort({ createdAt: 'desc' })
+        .skip(startIndex)
+        .limit(perPage)
+        .exec()
+    ]);
+
+    const articleDtos = articles.map((article) =>
+      plainToClass(GetArticleResDto, article, { excludeExtraneousValues: true })
+    );
+    const totalPage = Math.ceil(totalArticleCount / perPage);
+
+    return new Page<GetArticleResDto>(page, totalPage, articleDtos)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} article`;
-  }
+  async getArticleListByQuery(query: GetArticleDto): Promise<Page<GetArticleResDto>> {
+    const { hashtag, type, orderBy, searchBy, search, page, perPage } = query;
+    const mongoQuery: GetArticleQueryResDto = {};
 
-  /***************************************************
-   * DMZ
-   ***************************************************/
+    if (hashtag) {
+      mongoQuery.hashtag = hashtag;
+    }
 
-  // 연규님 Place
+    if (type) {
+      mongoQuery.type = type;
+    }
 
-  async findAll(): Promise<Article[]> {
-    const articles = await this.articleModel.find();
-    return articles;
-  }
-  
-  async findArticleListByQueryParam(
-    request: any //ArticleQueryParamDto,
-  ): Promise<void> {
-    return;
-  }
+    const sort = orderBy || 'createdAt';
+    const order = sort.startsWith('-') ? -1 : 1;
 
-  async getArticleList(): Promise<void> {
-    return ;
+    if (searchBy && search) {
+      if (searchBy === 'title') {
+        mongoQuery.title = { $regex: search, $options: 'i' };
+      } else if (searchBy === 'content') {
+        mongoQuery.content = { $regex: search, $options: 'i' };
+      } else if (searchBy === 'title,content') {
+        // Search in both title and content
+        mongoQuery.$or = [
+          { title: { $regex: search, $options: 'i' } },
+          { content: { $regex: search, $options: 'i' } },
+        ];
+      }
+    }
+
+    const skip = (page - 1) * perPage;
+
+    const [totalArticleCount, articles] = await Promise.all([
+      this.articleModel.countDocuments({}),
+      this.articleModel
+        .find(mongoQuery)
+        .sort({ [sort]: order })
+        .skip(skip)
+        .limit(perPage)
+        .exec()
+    ]);
+
+    const totalPage = Math.ceil(totalArticleCount / perPage);
+
+    const articleDtos = articles.map((article) =>
+      plainToClass(GetArticleResDto, article, { excludeExtraneousValues: true })
+    );
+
+    return new Page<GetArticleResDto>(page, totalPage, articleDtos)
   }
 
   async sendLikeByContentId(contentId: string): Promise<void> {
     //TODO: contentID를 가져와서 게시물 타입에 따라 도메인으로 요청 보내기
     // 해당 게시물에 좋아요 + 1 추가해서 Article에 저장
-    return ;
+    return;
   }
   // async findAll(): Promise<Cat[]> {
   //   return this.catModel.find().exec스ㅐ);

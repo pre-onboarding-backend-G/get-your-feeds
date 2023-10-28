@@ -1,55 +1,39 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
+import { GetArticleResDto } from './dto/get-article-res.dto';
+import { PageRequestDto } from 'src/common/dto/page-request.dto';
+import { Page } from '../common/page';
+import { GetArticleDto } from './dto/get-article.dto';
 
 @Controller('articles')
 export class ArticleController {
-  constructor(private readonly articleService: ArticleService) {}
-
-  // Common
-
-  @Post()
-  async create(@Body() request: CreateArticleDto): Promise<string> {
-    await this.articleService.create(request);
-    return 'success';
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
-    return this.articleService.update(+id, updateArticleDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.articleService.remove(+id);
-  }
+  constructor(private readonly articleService: ArticleService) { }
 
   /***************************************************
    * DMZ
    ***************************************************/
 
-  // 연규님 Place
+  /**
+  * @author Yeon Kyu
+  * @email suntail2002@naver.com
+  * @create date 2023-10-28 13:44:24
+  * @modify date 2023-10-28 13:44:24
+  * @desc [description]
+  */
 
   @Get()
-  async getArticleList(): Promise<void> { // GetArticleDto[]
-    // return this.articleService.getArticleList();
+  async getArticleListByQuery(@Query() request: GetArticleDto): Promise<Page<GetArticleResDto>> {
+    const articles = this.articleService.getArticleListByQuery(request)
+    return ;
   }
 
-  @Get('/search')
-  findArticleListByQueryParam( //ArticleQueryParamDto
-    @Query() request:any ,
-  ): Promise<void> { // GetArticleByQueryParamDto[]
-    return this.articleService.findArticleListByQueryParam(request);
+  @Post()
+  async createArticle(
+    @Body() request: CreateArticleDto,
+  ): Promise<string> {
+    const reponse = await this.articleService.createArticle(request);
+    return reponse.contentId;
   }
 
   @Post()
