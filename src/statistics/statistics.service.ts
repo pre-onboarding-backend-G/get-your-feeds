@@ -4,17 +4,13 @@ import {
   ArticleStatisticsValueType,
 } from './statistics.type';
 import { ArticleStatisticsModel } from './schema/article-statistics.model';
+import { GetArticleStatisticsResDto } from './dto/get-article-statistics-res.dto';
 
-/**
- * @author 명석
- * @desc dto 작성 전, dto 대신 활용하기 위한 타입입니다.
- * @todo dto 작성 이후 삭제
- */
-export type QueryType = {
-  hashtag: string[];
+export type GetArticleStatisticsQueryType = {
+  hashtags?: string[];
   periodType: ArticleStatisticsPeriodType;
-  start: Date;
-  end: Date;
+  startDate: Date;
+  endDate: Date;
   value: ArticleStatisticsValueType;
 };
 
@@ -24,13 +20,17 @@ export class StatisticsService {
     private readonly articleStatisticsModel: ArticleStatisticsModel,
   ) {}
 
-  async getArticleStatistics(dto: QueryType) {
-    //todo dto의 hashtag 값이 있는지 검증하는 dto 메서드 추가
-    //todo dto에 hashtag가 없을 경우 accountTag를 hashtag의 값으로 추가하는 메서드 추가
-    const data = await this.articleStatisticsModel.getArticleStatistics(
-      dto as any,
+  async getArticleStatistics(
+    getArticleStatisticsQuery: GetArticleStatisticsQueryType,
+  ) {
+    return new GetArticleStatisticsResDto(
+      await this.articleStatisticsModel.getArticleStatistics(
+        getArticleStatisticsQuery,
+      ),
     );
+  }
 
-    return data;
+  async create(body) {
+    this.articleStatisticsModel.create(body);
   }
 }

@@ -96,7 +96,7 @@ export class GetArticleStatisticsDto {
   }
 
   private isEmptyHashtags(): boolean {
-    return this.hashtags.length === 0;
+    return this.hashtags[0] === '';
   }
 
   /**

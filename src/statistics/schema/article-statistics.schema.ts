@@ -8,13 +8,9 @@ import {
 
 export type ArticleStatisticsDocument = HydratedDocument<ArticleStatistics>;
 
-/**
- * @author 명석
- * @todo 인덱싱 적용 후 주석 삭제
- */
 @Schema({ timestamps: true })
 export class ArticleStatistics {
-  @Prop({ required: true, type: String })
+  @Prop({ required: true, type: String, unique: true })
   contentId: string;
 
   @Prop({ required: true, enum: ArticleSnsSchemaType })
@@ -38,3 +34,16 @@ export class ArticleStatistics {
 
 export const ArticleStatisticsSchema =
   SchemaFactory.createForClass(ArticleStatistics);
+
+ArticleStatisticsSchema.index(
+  {
+    hashtags: 1,
+    measurementDate: -1,
+  },
+  { background: true },
+);
+
+ArticleStatisticsSchema.index(
+  { hashtags: 1, articleCreationDate: -1 },
+  { background: true },
+);

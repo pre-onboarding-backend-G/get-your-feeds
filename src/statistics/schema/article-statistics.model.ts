@@ -11,7 +11,7 @@ import {
 } from './article-statistics.schema';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { QueryType } from '../statistics.service';
+import { GetArticleStatisticsQueryType } from '../statistics.service';
 
 @Injectable()
 export class ArticleStatisticsModel {
@@ -20,19 +20,73 @@ export class ArticleStatisticsModel {
     private articleStatisticsModel: Model<ArticleStatisticsDocument>,
   ) {}
 
-  /**
-   * @author 명석
-   * @desc 응답 DTO가 가져갈 책임이 있다면 위임할 예정입니다.
-   * @todo 응답 DTO 작성 후 주석 삭제
-   */
-  async getArticleStatistics(args: QueryType) {
-    const { hashtag, periodType, start, end, value } = args;
+  async getArticleStatistics(
+    getArticleStatisticsQuery: GetArticleStatisticsQueryType,
+  ) {
+    const { hashtags, periodType, startDate, endDate, value } =
+      getArticleStatisticsQuery;
+
+    const aggregationPipeLine =
+      value === ArticleStatisticsValue.COUNT
+        ? [
+            this.projectOperatorFactory(value),
+            { $match: { hashtags: { $in: hashtags } } },
+            this.groupOperatorFactory(periodType, value),
+            this.matchOperatorFactory(periodType, startDate, endDate),
+          ]
+        : [
+            this.projectOperatorFactory(value),
+            { $match: { hashtags: { $in: hashtags } } },
+            this.unwindOperatorFactory(value),
+            this.groupOperatorFactory(periodType, value),
+            this.matchOperatorFactory(periodType, startDate, endDate),
+          ];
+
     const result = await this.articleStatisticsModel
-      .aggregate()
-      .match(this.matchOperatorFactory(hashtag, value, start, end))
-      .group(this.groupOperatorFactory(periodType, value));
+      .aggregate(aggregationPipeLine)
+      .sort('_id');
 
     return result;
+  }
+
+  private projectOperatorFactory(value: ArticleStatisticsValueType) {
+    const projectOperator = { $project: { hashtags: 1 } };
+
+    switch (value) {
+      case ArticleStatisticsValue.COUNT:
+        projectOperator.$project['articleCreationDate'] = 1;
+        break;
+
+      case ArticleStatisticsValue.VIEW_COUNT:
+        projectOperator.$project['viewCountByDate'] = 1;
+        break;
+
+      case ArticleStatisticsValue.LIKE_COUNT:
+        projectOperator.$project['likeCountByDate'] = 1;
+        break;
+      case ArticleStatisticsValue.SHARE_COUNT:
+        projectOperator.$project['shareCountByDate'] = 1;
+        break;
+    }
+    return projectOperator;
+  }
+
+  private unwindOperatorFactory(value: ArticleStatisticsValueType) {
+    switch (value) {
+      case ArticleStatisticsValue.VIEW_COUNT:
+        return {
+          $unwind: '$viewCountByDate',
+        };
+
+      case ArticleStatisticsValue.LIKE_COUNT:
+        return {
+          $unwind: '$likeCountByDate',
+        };
+      case ArticleStatisticsValue.SHARE_COUNT:
+        return {
+          $unwind: '$shareCountByDate',
+        };
+    }
   }
 
   private groupOperatorFactory(
@@ -40,24 +94,28 @@ export class ArticleStatisticsModel {
     value: ArticleStatisticsValueType,
   ) {
     const groupOperator = {
-      _id: this.periodTypeGroupFactory(value, periodType),
+      $group: {
+        _id: this.periodTypeGroupFactory(value, periodType),
+      },
     };
 
     switch (value) {
       case ArticleStatisticsValue.COUNT:
-        groupOperator['count'] = { $sum: 1 };
+        groupOperator.$group['count'] = { $sum: 1 };
         break;
 
       case ArticleStatisticsValue.VIEW_COUNT:
-        groupOperator['viewCount'] = { $sum: '$viewCountByDate.count' };
+        groupOperator.$group['viewCount'] = { $sum: '$viewCountByDate.count' };
         break;
 
       case ArticleStatisticsValue.LIKE_COUNT:
-        groupOperator['likeCount'] = { $sum: '$likeCountByDate.count' };
+        groupOperator.$group['likeCount'] = { $sum: '$likeCountByDate.count' };
         break;
 
       case ArticleStatisticsValue.SHARE_COUNT:
-        groupOperator['shareCount'] = { $sum: '$shareCountByDate.count' };
+        groupOperator.$group['shareCount'] = {
+          $sum: '$shareCountByDate.count',
+        };
         break;
     }
 
@@ -70,117 +128,136 @@ export class ArticleStatisticsModel {
   ) {
     let periodTypeCondition: object;
 
-    if (value === ArticleStatisticsValue.COUNT) {
-      switch (periodType) {
-        case ArticleStatisticsPeriod.DATE:
+    if (periodType === ArticleStatisticsPeriod.DATE) {
+      switch (value) {
+        case ArticleStatisticsValue.COUNT:
           periodTypeCondition = {
             year: { $year: '$articleCreationDate' },
             month: { $month: '$articleCreationDate' },
-            date: { $date: '$articleCreationDate' },
+            day: { $dayOfMonth: '$articleCreationDate' },
           };
           break;
 
-        case ArticleStatisticsPeriod.HOUR:
+        case ArticleStatisticsValue.VIEW_COUNT:
           periodTypeCondition = {
-            year: { $year: '$articleCreationDate' },
-            month: { $month: '$articleCreationDate' },
-            date: { $date: '$articleCreationDate' },
-            hour: { $hour: '$articleCreationDate' },
+            year: { $year: '$viewCountByDate.measurementDate' },
+            month: { $month: '$viewCountByDate.measurementDate' },
+            day: { $dayOfMonth: '$viewCountByDate.measurementDate' },
+          };
+          break;
+
+        case ArticleStatisticsValue.LIKE_COUNT:
+          periodTypeCondition = {
+            year: { $year: '$likeCountByDate.measurementDate' },
+            month: { $month: '$likeCountByDate.measurementDate' },
+            day: { $dayOfMonth: '$likeCountByDate.measurementDate' },
+          };
+          break;
+
+        case ArticleStatisticsValue.SHARE_COUNT:
+          periodTypeCondition = {
+            year: { $year: '$shareCountByDate.measurementDate' },
+            month: { $month: '$shareCountByDate.measurementDate' },
+            day: { $dayOfMonth: '$shareCountByDate.measurementDate' },
           };
           break;
       }
-    } else {
-      switch (periodType) {
-        case ArticleStatisticsPeriod.DATE:
+    } else if (periodType === ArticleStatisticsPeriod.HOUR) {
+      switch (value) {
+        case ArticleStatisticsValue.COUNT:
           periodTypeCondition = {
-            year: { $year: '$measurementDate' },
-            month: { $month: '$measurementDate' },
-            date: { $date: '$measurementDate' },
+            year: { $year: '$articleCreationDate' },
+            month: { $month: '$articleCreationDate' },
+            day: { $dayOfMonth: '$articleCreationDate' },
+            hour: { $hour: '$articleCreationDate' },
           };
           break;
 
-        case ArticleStatisticsPeriod.HOUR:
+        case ArticleStatisticsValue.VIEW_COUNT:
           periodTypeCondition = {
-            year: { $year: '$measurementDate' },
-            month: { $month: '$measurementDate' },
-            date: { $date: '$measurementDate' },
-            hour: { $hour: '$measurementDate' },
+            year: { $year: '$viewCountByDate.measurementDate' },
+            month: { $month: '$viewCountByDate.measurementDate' },
+            day: { $dayOfMonth: '$viewCountByDate.measurementDate' },
+            hour: { $hour: '$viewCountByDate.measurementDate' },
+          };
+          break;
+
+        case ArticleStatisticsValue.LIKE_COUNT:
+          periodTypeCondition = {
+            year: { $year: '$likeCountByDate.measurementDate' },
+            month: { $month: '$likeCountByDate.measurementDate' },
+            day: { $dayOfMonth: '$likeCountByDate.measurementDate' },
+            hour: { $hour: '$likeCountByDate.measurementDate' },
+          };
+          break;
+
+        case ArticleStatisticsValue.SHARE_COUNT:
+          periodTypeCondition = {
+            year: { $year: '$shareCountByDate.measurementDate' },
+            month: { $month: '$shareCountByDate.measurementDate' },
+            day: { $dayOfMonth: '$shareCountByDate.measurementDate' },
+            hour: { $hour: '$shareCountByDate.measurementDate' },
           };
           break;
       }
     }
-
     return periodTypeCondition;
   }
 
   private matchOperatorFactory(
-    hashtag: string[],
-    value: ArticleStatisticsValueType,
-    start: Date,
-    end: Date,
+    periodType: ArticleStatisticsPeriodType,
+    startDate: Date,
+    endDate: Date,
   ) {
     const matchOperator = {
-      $and: [
-        {
-          hashtags: { $in: [...hashtag] },
-        },
-      ],
+      $match: {},
     };
 
-    matchOperator.$and.push(
-      ...this.measurementDateConditionFactory(value, start, end),
-    );
-    return matchOperator;
-  }
+    const startYear = startDate.getFullYear();
+    const startMonth = startDate.getMonth() + 1;
+    const startDay = startDate.getDate();
+    const startHour = startDate.getHours();
+    const endYear = endDate.getFullYear();
+    const endMonth = endDate.getMonth() + 1;
+    const endDay = endDate.getDate();
+    const endHour = endDate.getHours();
 
-  private measurementDateConditionFactory(
-    value: ArticleStatisticsValueType,
-    start: Date,
-    end: Date,
-  ) {
-    const measurementDateCondition = [];
-
-    switch (value) {
-      case ArticleStatisticsValue.COUNT:
-        measurementDateCondition.push({
-          articleCreationDate: { $gte: start, $lt: end },
-        });
+    switch (periodType) {
+      case ArticleStatisticsPeriod.DATE:
+        matchOperator.$match = {
+          '_id.year': { $gte: startYear, $lte: endYear },
+          '_id.month': { $gte: startMonth, $lte: endMonth },
+          '_id.day': { $gte: startDay, $lte: endDay },
+        };
         break;
 
-      case ArticleStatisticsValue.VIEW_COUNT:
-        measurementDateCondition.push({
-          viewCountByDate: {
-            measurementDate: {
-              $gte: start,
-              $lt: end,
-            },
-          },
-        });
-        break;
-
-      case ArticleStatisticsValue.LIKE_COUNT:
-        measurementDateCondition.push({
-          likeCountByDate: {
-            measurementDate: {
-              $gte: start,
-              $lt: end,
-            },
-          },
-        });
-        break;
-
-      case ArticleStatisticsValue.SHARE_COUNT:
-        measurementDateCondition.push({
-          shareCountByDate: {
-            measurementDate: {
-              $gte: start,
-              $lt: end,
-            },
-          },
-        });
+      case ArticleStatisticsPeriod.HOUR:
+        matchOperator.$match = {
+          '_id.year': { $gte: startYear, $lte: endYear },
+          '_id.month': { $gte: startMonth, $lte: endMonth },
+          '_id.day': { $gte: startDay, $lte: endDay },
+          '_id.hour': { $gte: startHour, $lte: endHour },
+        };
         break;
     }
 
-    return measurementDateCondition;
+    return matchOperator;
+  }
+
+  async create(body: any[]) {
+    const documents = body.map((v) => {
+      const document = {
+        contentId: v.contentId,
+        hashtags: v.hashtags,
+        snsType: v.snsType,
+        articleCreationDate: v.articleCreationDate,
+        viewCountByDate: v.viewCountByDate,
+        likeCountByDate: v.likeCountByDate,
+        shareCountByDate: v.shareCountByDate,
+      };
+      return document;
+    });
+
+    return await this.articleStatisticsModel.insertMany(documents, {});
   }
 }
