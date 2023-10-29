@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
-import { GetArticleResDto } from './dto/get-article-res.dto';
-import { PageRequestDto } from 'src/common/dto/page-request.dto';
+import { PageRequestDto } from '../common/dto/page-request.dto';
 import { Page } from '../common/page';
 import { GetArticleDto } from './dto/get-article.dto';
+import { PaginationOptionsDto } from './dto/pagination-options.dto';
 
 @Controller('articles')
 export class ArticleController {
@@ -23,9 +23,11 @@ export class ArticleController {
   */
 
   @Get()
-  async getArticleListByQuery(@Query() request: GetArticleDto): Promise<Page<GetArticleResDto>> {
-    const articles = this.articleService.getArticleListByQuery(request)
-    return ;
+  async getPaginatedList(
+    @Query()
+    request: PageRequestDto,
+  ) {
+    return await this.articleService.getPaginatedArticleList(request.validatePaginateQuery());
   }
 
   @Post()
