@@ -1,24 +1,56 @@
-import { IsEnum, IsOptional, IsString, Length } from "class-validator";
-import { PageRequestDto } from "src/common/dto/page-request.dto";
-import { SnsType } from "../schema/article.schema";
+import { Type } from 'class-transformer';
+import { IsOptional, IsInt, IsNumber, IsString } from 'class-validator';
 
-export class GetArticleDto extends PageRequestDto {
+export class RequestPaginatedQueryDto {
+  @IsInt()
+  @Type(() => Number)
   @IsOptional()
-  hashtag: string;
+  @IsNumber()
+  page?: number;
 
+  @IsInt()
   @IsOptional()
-  @IsEnum(SnsType)
-  type: SnsType;
+  @Type(() => Number)
+  perPage?: number;
 
-  @IsOptional()
-  orderBy: string;
-
-  @IsOptional()
   @IsString()
-  searchBy: string;
-  
   @IsOptional()
+  @Type(() => String)
+  type?: string;
+
   @IsString()
-  @Length(2, 10)
-  search: string
+  @IsOptional()
+  @Type(() => String)
+  hashtag?: string;
+
+  constructor(
+    type?: string,
+    hashtag?: string,
+    page?: number,
+    perPage?: number,
+  ) {
+    this.type = type;
+    this.hashtag = hashtag;
+    this.page = page;
+    this.perPage = perPage;
+  }
+
+  get skip(): number {
+    return this.page <= 0 ? (this.page = 0) : (this.page - 1) * this.perPage;
+  }
+
+  validatePaginateQuery() {
+    this.validatePage();
+    this.validateTake();
+
+    return this;
+  }
+
+  private validateTake() {
+    this.perPage = this.perPage && this.perPage >= 1 ? this.perPage : 10;
+  }
+
+  private validatePage() {
+    this.page = this.page && this.page >= 1 ? this.page : 1;
+  }
 }

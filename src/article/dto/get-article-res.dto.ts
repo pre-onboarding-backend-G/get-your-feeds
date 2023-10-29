@@ -1,4 +1,4 @@
-import { Exclude, Expose, Type } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import { SnsType } from '../schema/article.schema';
 
 export class GetArticleResDto {
@@ -25,33 +25,4 @@ export class GetArticleResDto {
 
   @Expose()
   shareCount: number;
-}
-
-class QueryOptions {
-  $regex: string;
-  $options: string;
-}
-
-class Title {
-  @Type(() => QueryOptions)
-  title: QueryOptions;
-}
-
-class Content {
-  @Type(() => QueryOptions)
-  content: QueryOptions;
-}
-
-export class GetArticleQueryResDto {
-  hashtag?: string;
-
-  type?: string;
-
-  @Type(() => QueryOptions)
-  title?: QueryOptions;
-
-  @Type(() => QueryOptions)
-  content?: QueryOptions;
-
-  $or?: (Title | Content)[];
 }

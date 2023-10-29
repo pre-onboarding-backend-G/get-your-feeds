@@ -1,19 +1,13 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
-import { PageRequestDto } from '../common/dto/page-request.dto';
+import { RequestPaginatedQueryDto } from './dto/get-article.dto';
+import { GetArticleResDto } from './dto/get-article-res.dto';
 import { Page } from '../common/page';
-import { GetArticleDto } from './dto/get-article.dto';
-import { PaginationOptionsDto } from './dto/pagination-options.dto';
 
 @Controller('articles')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) { }
-
-  /***************************************************
-   * DMZ
-   ***************************************************/
-
   /**
   * @author Yeon Kyu
   * @email suntail2002@naver.com
@@ -25,9 +19,11 @@ export class ArticleController {
   @Get()
   async getPaginatedList(
     @Query()
-    request: PageRequestDto,
-  ) {
-    return await this.articleService.getPaginatedArticleList(request.validatePaginateQuery());
+    request: RequestPaginatedQueryDto,
+  ): Promise<Page<GetArticleResDto>> {
+    return await this.articleService.getPaginatedArticleList(
+      request.validatePaginateQuery()
+    );
   }
 
   @Post()
@@ -38,11 +34,10 @@ export class ArticleController {
     return reponse.contentId;
   }
 
-  @Post()
-  //TODO: uuid pipe
-  sendLike(contentId: string) {
-    //게시물 리턴
-    return;
+  @Get('likes/:contentId')
+  async sendLikeByContentId(@Param('contentId') contentId: string): Promise<string> {
+    await this.articleService.sendLikeByContentId(contentId)
+    return contentId;
   }
 
   /***************************************************
