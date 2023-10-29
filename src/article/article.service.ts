@@ -83,7 +83,7 @@ export class ArticleService {
 
   // 미종
 
-  findOne(id: number) {
-    return `This action returns a #${id} article`;
-  }
+  // findOne(id: number) {
+  //   return `This action returns a #${id} article`;
+  // }
 }

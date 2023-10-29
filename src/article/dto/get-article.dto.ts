@@ -46,11 +46,11 @@ export class RequestPaginatedQueryDto {
     return this;
   }
 
-  private validateTake() {
+  private validateTake(): void {
     this.perPage = this.perPage && this.perPage >= 1 ? this.perPage : 10;
   }
 
-  private validatePage() {
+  private validatePage(): void {
     this.page = this.page && this.page >= 1 ? this.page : 1;
   }
 }

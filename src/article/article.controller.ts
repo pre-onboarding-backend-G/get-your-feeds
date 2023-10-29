@@ -46,10 +46,10 @@ export class ArticleController {
 
   // 미종 Place
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.articleService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.articleService.findOne(+id);
+  // }
 
   // @Post()
   // createShare() {
