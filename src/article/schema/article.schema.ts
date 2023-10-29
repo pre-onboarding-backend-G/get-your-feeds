@@ -1,11 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, now } from 'mongoose';
-import { generateNoDashUUID } from 'src/common/util/uuid.util';
+import { generateNoDashUUID } from '../../common/util/uuid.util';
 
 export enum SnsType {
   Facebook = 'facebook',
   Twitter = 'twitter',
-  instagram = 'instagram',
+  Instagram = 'instagram',
   Threads = 'threads',
 }
 
