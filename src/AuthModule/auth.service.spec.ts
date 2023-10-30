@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/schema/user.schema';
+import { ConfigService } from '@nestjs/config';
+import { getModelToken } from '@nestjs/mongoose';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -14,12 +16,16 @@ describe('AuthService', () => {
         {
           provide: JwtService,
           useValue: {
-            sign: jest.fn().mockImplementation((payload) => 'testToken'),
+            sign: jest.fn().mockReturnValue('testToken'),
           },
         },
         {
-          provide: 'UserModel',
-          useValue: jest.fn(),
+          provide: ConfigService,
+          useValue: {},
+        },
+        {
+          provide: getModelToken('User'),
+          useValue: {},
         },
       ],
     }).compile();
@@ -35,7 +41,7 @@ describe('AuthService', () => {
       const token = await authService.login(user);
 
       expect(jwtService.sign).toHaveBeenCalledWith({ sub: '123' });
-      expect(token).toEqual('testToken');
+      expect(token).toBe('testToken');
     });
   });
 });
