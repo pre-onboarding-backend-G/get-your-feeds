@@ -1,64 +1,45 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
+import { RequestPaginatedQueryDto } from './dto/get-article.dto';
+import { GetArticleResDto } from './dto/get-article-res.dto';
+import { Page } from '../common/page';
 import { GetArticleDetailResDto } from './dto/get-article-detail-res.dto';
 import { CreateArticleShareDto } from './dto/create-article-share.dto';
 
 @Controller('articles')
 export class ArticleController {
-  constructor(private readonly articleService: ArticleService) {}
-
-  // Common
-
-  @Post()
-  async create(@Body() request: CreateArticleDto): Promise<string> {
-    await this.articleService.create(request);
-    return 'success';
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
-    return this.articleService.update(+id, updateArticleDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.articleService.remove(+id);
-  }
-
-  /***************************************************
-   * DMZ
-   ***************************************************/
-
-  // 연규님 Place
+  constructor(private readonly articleService: ArticleService) { }
+  /**
+  * @author Yeon Kyu
+  * @email suntail2002@naver.com
+  * @create date 2023-10-28 13:44:24
+  * @modify date 2023-10-28 13:44:24
+  * @desc [description]
+  */
 
   @Get()
-  async getArticleList(): Promise<void> { // GetArticleDto[]
-    // return this.articleService.getArticleList();
-  }
-
-  @Get('/search')
-  findArticleListByQueryParam( //ArticleQueryParamDto
-    @Query() request:any ,
-  ): Promise<void> { // GetArticleByQueryParamDto[]
-    return this.articleService.findArticleListByQueryParam(request);
+  async getPaginatedList(
+    @Query()
+    request: RequestPaginatedQueryDto,
+  ): Promise<Page<GetArticleResDto>> {
+    return await this.articleService.getPaginatedArticleList(
+      request.validatePaginateQuery()
+    );
   }
 
   @Post()
-  //TODO: uuid pipe
-  sendLike(contentId: string) {
-    //게시물 리턴
-    return;
+  async createArticle(
+    @Body() request: CreateArticleDto,
+  ): Promise<string> {
+    const reponse = await this.articleService.createArticle(request);
+    return reponse.contentId;
+  }
+
+  @Get('likes/:contentId')
+  async sendLikeByContentId(@Param('contentId') contentId: string): Promise<string> {
+    await this.articleService.sendLikeByContentId(contentId)
+    return contentId;
   }
 
   /***************************************************

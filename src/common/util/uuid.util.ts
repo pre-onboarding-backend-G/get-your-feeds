@@ -1,5 +1,5 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v1 as uuidv1 } from 'uuid';
 
 export function generateNoDashUUID(): string {
-  return uuidv4().replace(/-/g, '');
+  return uuidv1().replace(/-/g, '');
 }

@@ -1,62 +1,86 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
-import { Article, ArticleDocument, SnsType } from './schema/article.schema';
+import { Article, ArticleDocument } from './schema/article.schema';
+import { getRandomInt } from '../common/util/random-int.util';
+import { Model } from 'mongoose';
+import { plainToClass } from 'class-transformer';
+import { GetArticleResDto } from './dto/get-article-res.dto';
+import { Page } from '../common/page';
+import { RequestPaginatedQueryDto } from './dto/get-article.dto';
 import { GetArticleDetailResDto } from './dto/get-article-detail-res.dto';
 
 @Injectable()
 export class ArticleService {
   constructor(
     @InjectModel(Article.name)
-    private articleModel: mongoose.Model<Article>,
-  ) {}
+    private articleModel: Model<Article>,
+  ) { }
 
-  // Common
+  /**
+  * @author Yeon Kyu
+  * @email suntail2002@naver.com
+  * @create date 2023-10-28 13:44:24
+  * @modify date 2023-10-28 13:44:24
+  * @desc [description]
+  */
+  async createArticle(request: CreateArticleDto): Promise<Article> {
+    const viewCount = getRandomInt(1, 100);
+    const likeCount = getRandomInt(0, 100);
+    const shareCount = getRandomInt(0, 100);
 
-  async create(request: CreateArticleDto): Promise<Article> {
-    const res = new this.articleModel(request);
-    return await res.save()
+    return await this.articleModel.create({
+      ...request,
+      viewCount,
+      likeCount,
+      shareCount
+    });
   }
 
-  update(id: number, updateArticleDto: UpdateArticleDto) {
-    return `This action updates a #${id} article`;
+  async getPaginatedArticleList(request: RequestPaginatedQueryDto): Promise<Page<GetArticleResDto>> {
+    const { page, perPage, skip, type, hashtag } = request
+
+    const [totalArticleCount, articles] = await Promise.all([
+      this.queryBuilder(type, hashtag).countDocuments(),
+      this.queryBuilder(type, hashtag)
+        .skip(skip)
+        .limit(perPage)
+        .exec()
+    ]);
+
+    const articleDtos = articles.map((article) =>
+      plainToClass(GetArticleResDto, article, { excludeExtraneousValues: true })
+    );
+    const totalPage = Math.ceil(totalArticleCount / perPage);
+
+    return new Page<GetArticleResDto>(page, totalPage, articleDtos)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} article`;
-  }
+  private queryBuilder(type: string, hashtag: string) {
+    const queryBuilder = this.articleModel.find({})
+    if (type) {
+      queryBuilder.where('type').equals(type);
+    }
 
-  /***************************************************
-   * DMZ
-   ***************************************************/
-
-  // 연규님 Place
-
-  async findAll(): Promise<Article[]> {
-    const articles = await this.articleModel.find();
-    return articles;
-  }
-  
-  async findArticleListByQueryParam(
-    request: any //ArticleQueryParamDto,
-  ): Promise<void> {
-    return;
-  }
-
-  async getArticleList(): Promise<void> {
-    return ;
+    if (hashtag && hashtag.length > 0) {
+      queryBuilder.where('hashtags').in([hashtag]);
+    }
+    return queryBuilder
   }
 
   async sendLikeByContentId(contentId: string): Promise<void> {
-    //TODO: contentID를 가져와서 게시물 타입에 따라 도메인으로 요청 보내기
-    // 해당 게시물에 좋아요 + 1 추가해서 Article에 저장
-    return ;
+    const article = await this.articleModel
+      .findOne({})
+      .where('contentId').equals(contentId)
+
+    if (!article) {
+      throw new NotFoundException('게시물을 찾을 수 없습니다.');
+    }
+
+    article.likeCount += 1;
+
+    await article.save();
   }
-  // async findAll(): Promise<Cat[]> {
-  //   return this.catModel.find().exec스ㅐ);
-  // }
 
   /***************************************************
    * DMZ

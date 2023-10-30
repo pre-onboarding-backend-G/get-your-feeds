@@ -1,28 +1,19 @@
-import { IsNumber, IsString, MaxLength } from 'class-validator';
+import { IsEnum, IsString, Length, MaxLength } from 'class-validator';
 import { SnsType } from '../schema/article.schema';
-
 
 export class CreateArticleDto {
   @IsString()
+  @Length(2, 20)
   title: string;
 
-  @IsString()
+  @IsEnum(SnsType)
   type: string;
-  
+
   @IsString()
   content: string;
 
-  @MaxLength(20, {
+  @MaxLength(10, {
     each: true,
   })
   hashtags: string[];
-
-  @IsNumber()
-  viewCount: number;
-
-  @IsNumber()
-  likeCount: number;
-  
-  @IsNumber()
-  shareCount: number;
 }
