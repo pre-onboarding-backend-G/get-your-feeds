@@ -37,7 +37,7 @@ export class AuthService {
     return null;
   }
 
-  async Register(registerUserDto: RegisterUserDto): Promise<User> {
+  async register(registerUserDto: RegisterUserDto): Promise<User> {
     const { email, password, connectedServices } = registerUserDto;
     const existingUser = await this.userModel.findOne({ email });
     if (existingUser) {
