@@ -7,11 +7,15 @@ import {
   ArticleStatisticsPeriod,
   ArticleStatisticsValue,
 } from './statistics.type';
-import { ArticleStatisticsModel } from './schema/article-statistics.model';
+import {
+  ArticleStatisticsAggregateType,
+  ArticleStatisticsModel,
+} from './schema/article-statistics.model';
+import { GetArticleStatisticsResDto } from './dto/get-article-statistics-res.dto';
 
 /**
  * @author 명석
- * @desc StatisticsModel 생성 전 임시로 사용하기 위해 임의의 mockModel 함수를 선언하여 사용합니다.
+ * @desc 게시물 통계 서비스가 정상 작동하는지에 대한 unit test입니다.
  */
 describe('StatisticsService', () => {
   let statisticsService: StatisticsService;
@@ -52,20 +56,32 @@ describe('StatisticsService', () => {
         value: ArticleStatisticsValue.COUNT,
       };
 
-      const expectedResult = [
-        { createdAt: new Date('2023-10-01'), counts: 1 },
-        { createdAt: new Date('2023-10-02'), counts: 2 },
-        { createdAt: new Date('2023-10-03'), counts: 3 },
-        { createdAt: new Date('2023-10-27'), counts: 4 },
+      const articleStatisticsAggregate: ArticleStatisticsAggregateType[] = [
+        {
+          _id: { year: 2023, month: 10, day: 10 },
+          count: 10,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 12 },
+          count: 4,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 16 },
+          count: 20,
+        },
       ];
+
+      const expectedResult = new GetArticleStatisticsResDto(
+        articleStatisticsAggregate,
+      );
 
       jest
         .spyOn(articleStatisticsModel, 'getArticleStatistics')
-        .mockResolvedValue(expectedResult);
+        .mockResolvedValue(articleStatisticsAggregate);
 
       const result = await statisticsService.getArticleStatistics(mockDto);
 
-      expect(result).toStrictEqual(expectedResult);
+      expect(JSON.stringify(result)).toBe(JSON.stringify(expectedResult));
       expect(articleStatisticsModel.getArticleStatistics).toHaveBeenCalledWith(
         mockDto,
       );
@@ -80,20 +96,32 @@ describe('StatisticsService', () => {
         value: ArticleStatisticsValue.VIEW_COUNT,
       };
 
-      const expectedResult = [
-        { createdAt: new Date('2023-10-01'), counts: 1 },
-        { createdAt: new Date('2023-10-02'), counts: 2 },
-        { createdAt: new Date('2023-10-03'), counts: 3 },
-        { createdAt: new Date('2023-10-27'), counts: 4 },
+      const articleStatisticsAggregate: ArticleStatisticsAggregateType[] = [
+        {
+          _id: { year: 2023, month: 10, day: 10 },
+          viewCount: 200,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 12 },
+          viewCount: 20,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 16 },
+          viewCount: 120,
+        },
       ];
+
+      const expectedResult = new GetArticleStatisticsResDto(
+        articleStatisticsAggregate,
+      );
 
       jest
         .spyOn(articleStatisticsModel, 'getArticleStatistics')
-        .mockResolvedValue(expectedResult);
+        .mockResolvedValue(articleStatisticsAggregate);
 
       const result = await statisticsService.getArticleStatistics(mockDto);
 
-      expect(result).toStrictEqual(expectedResult);
+      expect(JSON.stringify(result)).toBe(JSON.stringify(expectedResult));
       expect(articleStatisticsModel.getArticleStatistics).toHaveBeenCalledWith(
         mockDto,
       );
@@ -108,20 +136,33 @@ describe('StatisticsService', () => {
         value: ArticleStatisticsValue.LIKE_COUNT,
       };
 
-      const expectedResult = [
-        { createdAt: new Date('2023-10-01'), counts: 1 },
-        { createdAt: new Date('2023-10-02'), counts: 2 },
-        { createdAt: new Date('2023-10-03'), counts: 3 },
-        { createdAt: new Date('2023-10-27'), counts: 4 },
+      const articleStatisticsAggregate: ArticleStatisticsAggregateType[] = [
+        {
+          _id: { year: 2023, month: 10, day: 10 },
+          likeCount: 100,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 12 },
+          likeCount: 10,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 16 },
+          likeCount: 53,
+        },
       ];
+
+      const expectedResult = new GetArticleStatisticsResDto(
+        articleStatisticsAggregate,
+      );
 
       jest
         .spyOn(articleStatisticsModel, 'getArticleStatistics')
-        .mockResolvedValue(expectedResult);
+        .mockResolvedValue(articleStatisticsAggregate);
 
       const result = await statisticsService.getArticleStatistics(mockDto);
 
-      expect(result).toStrictEqual(expectedResult);
+      expect(JSON.stringify(result)).toBe(JSON.stringify(expectedResult));
+
       expect(articleStatisticsModel.getArticleStatistics).toHaveBeenCalledWith(
         mockDto,
       );
@@ -136,20 +177,33 @@ describe('StatisticsService', () => {
         value: ArticleStatisticsValue.SHARE_COUNT,
       };
 
-      const expectedResult = [
-        { createdAt: new Date('2023-10-01'), counts: 1 },
-        { createdAt: new Date('2023-10-02'), counts: 2 },
-        { createdAt: new Date('2023-10-03'), counts: 3 },
-        { createdAt: new Date('2023-10-27'), counts: 4 },
+      const articleStatisticsAggregate: ArticleStatisticsAggregateType[] = [
+        {
+          _id: { year: 2023, month: 10, day: 10 },
+          shareCount: 20,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 12 },
+          shareCount: 2,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 16 },
+          shareCount: 15,
+        },
       ];
+
+      const expectedResult = new GetArticleStatisticsResDto(
+        articleStatisticsAggregate,
+      );
 
       jest
         .spyOn(articleStatisticsModel, 'getArticleStatistics')
-        .mockResolvedValue(expectedResult);
+        .mockResolvedValue(articleStatisticsAggregate);
 
       const result = await statisticsService.getArticleStatistics(mockDto);
 
-      expect(result).toStrictEqual(expectedResult);
+      expect(JSON.stringify(result)).toBe(JSON.stringify(expectedResult));
+
       expect(articleStatisticsModel.getArticleStatistics).toHaveBeenCalledWith(
         mockDto,
       );
@@ -164,20 +218,33 @@ describe('StatisticsService', () => {
         value: ArticleStatisticsValue.COUNT,
       };
 
-      const expectedResult = [
-        { createdAt: new Date('2023-10-01T00:00:00Z'), counts: 1 },
-        { createdAt: new Date('2023-10-02T00:00:00Z'), counts: 2 },
-        { createdAt: new Date('2023-10-03T00:00:00Z'), counts: 3 },
-        { createdAt: new Date('2023-10-27T00:00:00Z'), counts: 4 },
+      const articleStatisticsAggregate: ArticleStatisticsAggregateType[] = [
+        {
+          _id: { year: 2023, month: 10, day: 10, hour: 10 },
+          count: 10,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 12, hour: 9 },
+          count: 4,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 16, hour: 22 },
+          count: 20,
+        },
       ];
+
+      const expectedResult = new GetArticleStatisticsResDto(
+        articleStatisticsAggregate,
+      );
 
       jest
         .spyOn(articleStatisticsModel, 'getArticleStatistics')
-        .mockResolvedValue(expectedResult);
+        .mockResolvedValue(articleStatisticsAggregate);
 
       const result = await statisticsService.getArticleStatistics(mockDto);
 
-      expect(result).toStrictEqual(expectedResult);
+      expect(JSON.stringify(result)).toBe(JSON.stringify(expectedResult));
+
       expect(articleStatisticsModel.getArticleStatistics).toHaveBeenCalledWith(
         mockDto,
       );
@@ -192,20 +259,33 @@ describe('StatisticsService', () => {
         value: ArticleStatisticsValue.VIEW_COUNT,
       };
 
-      const expectedResult = [
-        { createdAt: new Date('2023-10-01T00:00:00Z'), counts: 1 },
-        { createdAt: new Date('2023-10-02T00:00:00Z'), counts: 2 },
-        { createdAt: new Date('2023-10-03T00:00:00Z'), counts: 3 },
-        { createdAt: new Date('2023-10-27T00:00:00Z'), counts: 4 },
+      const articleStatisticsAggregate: ArticleStatisticsAggregateType[] = [
+        {
+          _id: { year: 2023, month: 10, day: 10, hour: 10 },
+          viewCount: 200,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 12, hour: 9 },
+          viewCount: 20,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 16, hour: 22 },
+          viewCount: 120,
+        },
       ];
+
+      const expectedResult = new GetArticleStatisticsResDto(
+        articleStatisticsAggregate,
+      );
 
       jest
         .spyOn(articleStatisticsModel, 'getArticleStatistics')
-        .mockResolvedValue(expectedResult);
+        .mockResolvedValue(articleStatisticsAggregate);
 
       const result = await statisticsService.getArticleStatistics(mockDto);
 
-      expect(result).toStrictEqual(expectedResult);
+      expect(JSON.stringify(result)).toBe(JSON.stringify(expectedResult));
+
       expect(articleStatisticsModel.getArticleStatistics).toHaveBeenCalledWith(
         mockDto,
       );
@@ -220,20 +300,33 @@ describe('StatisticsService', () => {
         value: ArticleStatisticsValue.LIKE_COUNT,
       };
 
-      const expectedResult = [
-        { createdAt: new Date('2023-10-01T00:00:00Z'), counts: 1 },
-        { createdAt: new Date('2023-10-02T00:00:00Z'), counts: 2 },
-        { createdAt: new Date('2023-10-03T00:00:00Z'), counts: 3 },
-        { createdAt: new Date('2023-10-27T00:00:00Z'), counts: 4 },
+      const articleStatisticsAggregate: ArticleStatisticsAggregateType[] = [
+        {
+          _id: { year: 2023, month: 10, day: 10, hour: 10 },
+          likeCount: 100,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 12, hour: 9 },
+          likeCount: 10,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 16, hour: 22 },
+          likeCount: 53,
+        },
       ];
+
+      const expectedResult = new GetArticleStatisticsResDto(
+        articleStatisticsAggregate,
+      );
 
       jest
         .spyOn(articleStatisticsModel, 'getArticleStatistics')
-        .mockResolvedValue(expectedResult);
+        .mockResolvedValue(articleStatisticsAggregate);
 
       const result = await statisticsService.getArticleStatistics(mockDto);
 
-      expect(result).toStrictEqual(expectedResult);
+      expect(JSON.stringify(result)).toBe(JSON.stringify(expectedResult));
+
       expect(articleStatisticsModel.getArticleStatistics).toHaveBeenCalledWith(
         mockDto,
       );
@@ -248,20 +341,34 @@ describe('StatisticsService', () => {
         value: ArticleStatisticsValue.SHARE_COUNT,
       };
 
-      const expectedResult = [
-        { createdAt: new Date('2023-10-01T00:00:00Z'), counts: 1 },
-        { createdAt: new Date('2023-10-02T00:00:00Z'), counts: 2 },
-        { createdAt: new Date('2023-10-03T00:00:00Z'), counts: 3 },
-        { createdAt: new Date('2023-10-27T00:00:00Z'), counts: 4 },
+      const articleStatisticsAggregate: ArticleStatisticsAggregateType[] = [
+        {
+          _id: { year: 2023, month: 10, day: 10, hour: 10 },
+          shareCount: 20,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 12, hour: 9 },
+
+          shareCount: 2,
+        },
+        {
+          _id: { year: 2023, month: 10, day: 16, hour: 22 },
+
+          shareCount: 15,
+        },
       ];
+      const expectedResult = new GetArticleStatisticsResDto(
+        articleStatisticsAggregate,
+      );
 
       jest
         .spyOn(articleStatisticsModel, 'getArticleStatistics')
-        .mockResolvedValue(expectedResult);
+        .mockResolvedValue(articleStatisticsAggregate);
 
       const result = await statisticsService.getArticleStatistics(mockDto);
 
-      expect(result).toStrictEqual(expectedResult);
+      expect(JSON.stringify(result)).toBe(JSON.stringify(expectedResult));
+
       expect(articleStatisticsModel.getArticleStatistics).toHaveBeenCalledWith(
         mockDto,
       );
