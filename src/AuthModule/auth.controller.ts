@@ -112,7 +112,7 @@ export class AuthController {
     @Res() res: Response,
   ) {
     try {
-      const createdUser = await this.authService.tempRegister(registerUserDto);
+      const createdUser = await this.authService.register(registerUserDto);
       const token = await this.authService.login(createdUser);
       res.status(HttpStatus.CREATED).json({ token });
     } catch (error) {
