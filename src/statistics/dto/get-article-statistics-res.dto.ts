@@ -25,7 +25,7 @@ export class GetArticleStatisticsResDto {
   }
 
   @Expose()
-  get date() {
+  get data() {
     return this._data;
   }
 }
