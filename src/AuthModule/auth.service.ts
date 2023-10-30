@@ -43,15 +43,48 @@ export class AuthService {
     if (existingUser) {
       throw new ConflictException('이미 존재하는 이메일입니다.');
     }
+    // To do : 비밀번호 암호화
 
     const createdUser = new this.userModel({
       email,
-      password,
+      password, // 암호화된 비밀번호로 변경
       connectedServices,
     });
     await createdUser.save();
     return createdUser;
   }
+
+  //   /**
+  //    * 회원가입.
+  //    *    - 비밀번호 검증
+  //    *    - 비밀번호 암호화
+  //    *    - 입력받은 정보와 암호화한 비밀번호 저장(회원가입)
+  //    *
+  //    * @param email
+  //    * @param password
+  //    * @param service
+  //    * @param userHashtag
+  //    * @returns accessToken, refreshToken
+  //    *
+  //    * @author SangUn Lee
+  //    */
+  //   async registerWithEmail(
+  //     email: string,
+  //     password: string,
+  //     service: string,
+  //     userHashtag: string,
+  //   ) {
+  //     this.verifyPassword(email, password, userHashtag);
+
+  //     const hash = await bcrypt.hash(password, 10);
+  //     // const hash = password;
+
+  //     const newUser = await this.usersService.createUser(
+  //       email,
+  //       hash,
+  //       service,
+  //       userHashtag,
+  //     );
 }
 
 // import {
@@ -137,25 +170,6 @@ export class AuthService {
 //       email,
 //       password,
 //     };
-//   }
-
-//   /**
-//    * JWT 검증.
-//    *    - JWT가 정상인 경우 payload를 반환
-//    *    - payload : email, id, tokenType(access | refresh)
-//    *
-//    * @param token
-//    * @returns payload
-//    *
-//    * @author SangUn Lee
-//    */
-//   verifyToken(token: string) {
-//     const jwtSecret = this.configService.get<string>('JWT_SECRET_KEY');
-//     const payload = this.jwtService.verify(token, {
-//       secret: jwtSecret,
-//     });
-
-//     return payload;
 //   }
 
 //   /**
@@ -257,38 +271,6 @@ export class AuthService {
 
 //     return this.loginUser(existingUser.email, existingUser.id);
 //   }
-
-//   /**
-//    * 회원가입.
-//    *    - 비밀번호 검증
-//    *    - 비밀번호 암호화
-//    *    - 입력받은 정보와 암호화한 비밀번호 저장(회원가입)
-//    *
-//    * @param email
-//    * @param password
-//    * @param service
-//    * @param userHashtag
-//    * @returns accessToken, refreshToken
-//    *
-//    * @author SangUn Lee
-//    */
-//   async registerWithEmail(
-//     email: string,
-//     password: string,
-//     service: string,
-//     userHashtag: string,
-//   ) {
-//     this.verifyPassword(email, password, userHashtag);
-
-//     const hash = await bcrypt.hash(password, 10);
-//     // const hash = password;
-
-//     const newUser = await this.usersService.createUser(
-//       email,
-//       hash,
-//       service,
-//       userHashtag,
-//     );
 
 //     return this.loginUser(newUser.email, newUser.id);
 //   }
