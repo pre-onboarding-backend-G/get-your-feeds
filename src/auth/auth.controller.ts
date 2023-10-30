@@ -16,7 +16,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Response } from 'express';
 import { GetUser } from './decorators/user.decorator';
 import { User } from 'src/user/schema/user.schema';
-import { RegisterUserDto } from 'src/user/dto/registerUserDto';
+import { RegisterUserDto } from 'src/user/dto/register-user.dto';
 
 @ApiTags('auth')
 @Controller('auth')
