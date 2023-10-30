@@ -7,6 +7,7 @@ import {
   Get,
   Res,
   HttpStatus,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
@@ -15,6 +16,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Response } from 'express';
 import { GetUser } from './decorators/user.decorator';
 import { User } from 'src/user/schema/user.schema';
+import { RegisterUserDto } from 'src/user/dto/RegisterUserDto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -103,22 +105,14 @@ export class AuthController {
     };
   }
 
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        email: { type: 'string', example: 'example@example.com' },
-        password: { type: 'string', example: 'strongpassword123' },
-      },
-    },
-  })
+  @ApiBody({ type: RegisterUserDto })
   @Post('register')
-  async tempRegister(@Body() body: any, @Res() res: Response) {
+  async tempRegister(
+    @Body(ValidationPipe) registerUserDto: RegisterUserDto,
+    @Res() res: Response,
+  ) {
     try {
-      const createdUser = await this.authService.tempRegister(
-        body.email,
-        body.password,
-      );
+      const createdUser = await this.authService.tempRegister(registerUserDto);
       const token = await this.authService.login(createdUser);
       res.status(HttpStatus.CREATED).json({ token });
     } catch (error) {

@@ -36,13 +36,18 @@ export class AuthService {
     return null;
   }
 
-  async tempRegister(email: string, password: string): Promise<User> {
+  async tempRegister(registerUserDto: RegisterUserDto): Promise<User> {
+    const { email, password, connectedServices } = registerUserDto;
     const existingUser = await this.userModel.findOne({ email });
     if (existingUser) {
       throw new ConflictException('이미 존재하는 이메일입니다.');
     }
 
-    const createdUser = new this.userModel({ email, password });
+    const createdUser = new this.userModel({
+      email,
+      password,
+      connectedServices,
+    });
     await createdUser.save();
     return createdUser;
   }
