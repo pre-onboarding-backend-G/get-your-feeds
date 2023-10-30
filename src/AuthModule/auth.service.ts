@@ -37,6 +37,12 @@ export class AuthService {
     return this.jwtService.sign(payload);
   }
 
+  createToken(userId: string): string {
+    const payload = { sub: userId };
+    const token = this.jwtService.sign(payload);
+    return token;
+  }
+
   async validateUser(email: string, pass: string): Promise<User | null> {
     const user = await this.userModel.findOne({ email });
     if (user && user.password === pass) {

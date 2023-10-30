@@ -1,4 +1,8 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import {
+  createParamDecorator,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { User } from 'src/user/schema/user.schema';
 
 /**
@@ -13,6 +17,17 @@ import { User } from 'src/user/schema/user.schema';
 export const GetUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): User => {
     const request = ctx.switchToHttp().getRequest();
-    return request.user;
+
+    if (!request.user) {
+      throw new UnauthorizedException();
+    }
+
+    // 새로운 토큰이 재발급된 경우
+    if ('accessToken' in request.user) {
+      throw new UnauthorizedException('Token expired, please refresh token');
+    }
+
+    // 사용자 정보 반환
+    return request.user as User;
   },
 );
