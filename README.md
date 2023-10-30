@@ -6,100 +6,50 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 [![Mongoose](https://img.shields.io/badge/Mongoose-880000?style=for-the-badge&logo=mongoose&logoColor=white)](https://mongoosejs.com/)
 
-
-## 💼 : 소셜 미디어 통합 Feed 서비스
-
-### 🌟 소셜 미디어 통합 Feed 서비스
-
-#### 1️⃣ 
-
-- 
-
-#### 2️⃣ TypeScript와 정적 타입 검사
-
-- 
-
-#### 3️⃣ 코드 구성
-
-- 
-
-### 🚀 NestJS를 통한 프로젝트 구현
-
-## 📑 요구사항 분석
-
-- **JobPosting:** 특정 기업이 게시한 채용 정보를 담고 있습니다. 채용 포지션, 보상, 콘텐츠 및 사용 기술을 포함합니다.
-- **Applicant:** 채용에 지원한 사용자의 정보를 담고 있습니다.
-
-## 🗺️ ERD
-
-
-## 🛠️ 데이터 모델 설계
-
-### 1️⃣ `Applicant` 엔터티
-
-`Applicant` 엔터티는 사용자(`User`)와 직무 게시물(`JobPosting`) 사이의 다대다 관계를 관리합니다.
-
-- 🎯 **고유 제약 조건**:
-  `userId`와 `jobPostingId`의 조합은 고유해야 합니다. 이를 통해 동일한 사용자가 동일한 직무 게시물에 중복으로 지원할 수 없도록 합니다.
-
-### 2️⃣ `Company` 엔터티
-
-`Company` 엔터티는 회사에 대한 기본 정보를 제공합니다. 여기에는 회사의 이름, 국가, 지역 정보가 포함됩니다.
-
-- 🔄 **관계 설정**:
-  `Company`와 `JobPosting`은 일대다 관계를 형성합니다. 하나의 회사는 여러 개의 직무 게시물을 가질 수 있습니다.
-
-### 3️⃣ `JobPosting` 엔터티
-
-`JobPosting` 엔터티는 회사의 직무 게시물을 정의합니다. 이는 포지션, 보상, 컨텐츠, 기술 등 다양한 필드를 포함합니다.
-
-- 🔄 **관계 설정**:
-  - `Company`와 `JobPosting`은 다대일 관계를 형성합니다. 하나의 직무 게시물은 하나의 회사에 속합니다.
-  - `JobPosting`과 `Applicant`는 일대다 관계를 형성합니다. 하나의 직무 게시물은 여러 지원자를 가질 수 있습니다.
-
-### 4️⃣ `User` 엔터티
-
-`User` 엔터티는 플랫폼의 사용자를 나타냅니다.
-
-- 🔄 **관계 설정**:
-  `User`와 `Applicant`는 일대다 관계를 형성합니다. 하나의 사용자는 여러 개의 지원 상태를 가질 수 있습니다.
-
-🔍 **이러한 설계의 핵심 포인트**:
-
-- `Applicant` 엔터티를 통해 `User`와 `JobPosting` 간의 관계를 잘 정의하고 관리합니다.
-- 모든 엔터티 간의 관계가 명확히 정의되어 있어, 데이터의 일관성을 유지하며 쿼리 효율성을 높입니다.
-
-### 🔥 기능들:
-
-#### 1️⃣ **채용 정보 관리**
-
-- 생성: POST `/job-postings`
-- 업데이트: PUT & PATCH `/job-postings/:id`
-- 삭제: DELETE `/job-postings/:id`
-- 전체 조회: GET `/job-postings`
-- 상세 조회: GET `/job-postings/:id/job_posting_detail`
-
-#### 2️⃣ **지원자 관리**
-
-- 채용공고에 지원: POST `/applications`
-
-#### 3️⃣ **Sample 데이터 생성**
-
-- 기능 테스트를 위한 회사와 사용자를 생성: POST `/sample/company`, `/sample/user`
-
-## 📂 구현 과정
-
 ### 📁 폴더 구조:
 
 ```
 project-root
 │
 ├── src
-│   ├── DTO
-│   ├── controllers
-│   ├── models
-│   └── services
-├── test
+│   ├── app.controller.spec.ts
+│   ├── app.controller.ts
+│   ├── app.module.ts
+│   ├── app.service.ts
+│   ├── article
+│   │   ├── article.controller.spec.ts
+│   │   ├── article.controller.ts
+│   │   ├── article.module.ts
+│   │   ├── article.service.spec.ts
+│   │   ├── article.service.ts
+│   │   ├── dto
+│   │   │   ├── create-article-share.dto.ts
+│   │   │   ├── create-article.dto.ts
+│   │   │   ├── get-article-detail-res.dto.ts
+│   │   │   ├── get-article-res.dto.ts
+│   │   │   └── get-article.dto.ts
+│   │   └── schema
+│   │       └── article.schema.ts
+│   ├── auth
+│   │   ├── auth.controller.ts
+│   │   ├── auth.module.ts
+│   │   ├── auth.service.spec.ts
+│   │   ├── auth.service.ts
+│   │   ├── decorators
+│   │   │   └── user.decorator.ts
+│   │   ├── guards
+│   │   │   ├── jwt-auth.guard.spec.ts
+│   │   │   ├── jwt-auth.guard.ts
+│   │   │   ├── local-auth.guard.spec.ts
+│   │   │   └── local-auth.guard.ts
+│   │   ├── strategies
+│   │   │   ├── jwt.strategy.spec.ts
+│   │   │   ├── jwt.strategy.ts
+│   │   │   ├── local.strategy.spec.ts
+│   │   │   └── local.strategy.ts
+│   │   └── types
+│   │       ├── jwt-payload.interface.ts
+│   │       └── verification.data.ts
 └── 기타 설정 및 메타데이터 파일들
 ```
 
@@ -223,6 +173,6 @@ project-root
 **Response:** The email of the fetched user as a string.
 
 
-## 🏁 마무리와 배운 점 (팀장)
+## 🏁 마무리와 배운 점
 
-- 
+- NoSQL와 Mongoose를 사용하여 협업하는 경험을 갖을 수 있었습니다. 
