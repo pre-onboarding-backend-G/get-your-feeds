@@ -58,7 +58,7 @@ export class ArticleController {
   @Post('share')
   async sendShare(
     @Body() dto: CreateArticleShareDto
-  ) {
+  ): Promise<void> {
     return await this.articleService.sendShareByContentId(dto.contentId);
   }
 }

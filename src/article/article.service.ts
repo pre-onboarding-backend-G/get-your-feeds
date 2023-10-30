@@ -3,7 +3,7 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Article, ArticleDocument } from './schema/article.schema';
 import { getRandomInt } from '../common/util/random-int.util';
-import { Model } from 'mongoose';
+import { Model, Query } from 'mongoose';
 import { plainToClass } from 'class-transformer';
 import { GetArticleResDto } from './dto/get-article-res.dto';
 import { Page } from '../common/page';
@@ -56,7 +56,7 @@ export class ArticleService {
     return new Page<GetArticleResDto>(page, totalPage, articleDtos)
   }
 
-  private queryBuilder(type: string, hashtag: string) {
+  private queryBuilder(type: string, hashtag: string): Query<Article[], ArticleDocument> {
     const queryBuilder = this.articleModel.find({})
     if (type) {
       queryBuilder.where('type').equals(type);
@@ -91,17 +91,15 @@ export class ArticleService {
   async findOneByContentId(
     contentId: string
   ): Promise<GetArticleDetailResDto> {
-    let ret: GetArticleDetailResDto;
     let foundArticle: ArticleDocument = await this.articleModel.findOne({
       contentId: contentId
     });
     if (foundArticle === null) {
       throw new NotFoundException(`Article not found.`);
     }
-    // console.log(foundArticle);
     foundArticle.viewCount += 1;
     foundArticle = await foundArticle.save();
-    ret = {
+    const ret: GetArticleDetailResDto = {
       contentId: foundArticle.contentId,
       title: foundArticle.title,
       type: foundArticle.type,
@@ -123,13 +121,13 @@ export class ArticleService {
     if (foundArticle === null) {
       throw new NotFoundException(`Article not found.`);
     }
-    let endpontToReq: string 
-      = "https://www." + foundArticle.type 
+    let endpontToReq: string
+      = "https://www." + foundArticle.type
       + ".com/share/" + contentId;
     // NOTE : HTTP Module 이용해서 endpointToReq으로 호출하고 성공했다고 가정 (response status 200)
     endpontToReq;
     foundArticle.shareCount += 1;
     foundArticle = await foundArticle.save();
-    return ;
+    return;
   }
 }

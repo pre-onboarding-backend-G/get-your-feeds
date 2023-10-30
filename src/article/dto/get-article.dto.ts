@@ -38,7 +38,7 @@ export class RequestPaginatedQueryDto {
     return this.page <= 0 ? (this.page = 0) : (this.page - 1) * this.perPage;
   }
 
-  validatePaginateQuery() {
+  validatePaginateQuery(): this {
     this.validatePage();
     this.validateTake();
 
