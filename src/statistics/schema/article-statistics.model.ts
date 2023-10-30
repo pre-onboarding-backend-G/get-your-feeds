@@ -13,6 +13,14 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { GetArticleStatisticsQueryType } from '../statistics.service';
 
+export interface ArticleStatisticsAggregateType {
+  _id: { year: number; month: number; day: number; hour?: number };
+  count?: number;
+  likeCount?: number;
+  viewCount?: number;
+  shareCount?: number;
+}
+
 @Injectable()
 export class ArticleStatisticsModel {
   constructor(
@@ -20,12 +28,13 @@ export class ArticleStatisticsModel {
     private articleStatisticsModel: Model<ArticleStatisticsDocument>,
   ) {}
 
-  async getArticleStatistics(
-    getArticleStatisticsQuery: GetArticleStatisticsQueryType,
-  ) {
-    const { hashtags, periodType, startDate, endDate, value } =
-      getArticleStatisticsQuery;
-
+  async getArticleStatistics({
+    hashtags,
+    periodType,
+    startDate,
+    endDate,
+    value,
+  }: GetArticleStatisticsQueryType) {
     const aggregationPipeLine =
       value === ArticleStatisticsValue.COUNT
         ? [
@@ -42,11 +51,9 @@ export class ArticleStatisticsModel {
             this.matchOperatorFactory(periodType, startDate, endDate),
           ];
 
-    const result = await this.articleStatisticsModel
-      .aggregate(aggregationPipeLine)
+    return await this.articleStatisticsModel
+      .aggregate<ArticleStatisticsAggregateType>(aggregationPipeLine)
       .sort('_id');
-
-    return result;
   }
 
   private projectOperatorFactory(value: ArticleStatisticsValueType) {
