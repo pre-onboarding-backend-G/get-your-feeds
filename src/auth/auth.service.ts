@@ -4,17 +4,21 @@ import {
   Res,
   HttpStatus,
   UnauthorizedException,
+  NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { RegisterUserDto } from 'src/user/dto/registerUserDto';
 import { User } from 'src/user/schema/user.schema';
 import * as bcrypt from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
+import { RegisterUserDto } from 'src/user/dto/register-user.dto';
+import { VerificationData } from './types/verification.data';
 
 @Injectable()
 export class AuthService {
+  private verificationCodes: Map<string, VerificationData> = new Map();
   constructor(
     private jwtService: JwtService,
     private readonly configService: ConfigService,
@@ -45,14 +49,16 @@ export class AuthService {
 
   async validateUser(email: string, pass: string): Promise<User | null> {
     const user = await this.userModel.findOne({ email });
-    if (user && user.password === pass) {
-      //const isMatch = await bcrypt.compare(pass, user.password);와 같은 비밀번호 검증 로직 추가
-      return user;
+    if (user) {
+      const isMatch = await bcrypt.compare(pass, user.password);
+      if (!isMatch) {
+        return null;
+      }
     }
-    return null;
+    return user;
   }
 
-  async register(registerUserDto: RegisterUserDto): Promise<User> {
+  async register(registerUserDto: RegisterUserDto): Promise<void> {
     const { email, password, connectedServices } = registerUserDto;
     const existingUser = await this.userModel.findOne({ email });
     if (existingUser) {
@@ -60,13 +66,43 @@ export class AuthService {
     }
     const hash = await bcrypt.hash(password, 10);
 
-    const createdUser = new this.userModel({
+    const verificationCode = Math.random().toString().slice(-6);
+    const expires = Date.now() + 5 * 60 * 1000;
+
+    this.verificationCodes.set(email, {
       email,
-      hash,
+      password: hash,
       connectedServices,
+      code: verificationCode,
+      expires,
+    });
+
+    // 이메일로 전송하는 로직 추가 예정
+    console.log(`Verification code for ${email}: ${verificationCode}`);
+  }
+
+  async verify(email: string, code: string): Promise<void> {
+    const storedData = this.verificationCodes.get(email);
+    if (!storedData) {
+      throw new NotFoundException('가입하지 않은 이메일입니다.');
+    }
+    if (Date.now() > storedData.expires) {
+      throw new BadRequestException('인증번호가 만료되었습니다.');
+    }
+    if (storedData.code !== code) {
+      throw new BadRequestException('인증번호가 일치하지 않습니다.');
+    }
+
+    const createdUser = new this.userModel({
+      email: storedData.email,
+      password: storedData.password,
+      connectedServices: storedData.connectedServices,
     });
     await createdUser.save();
-    return createdUser;
+
+    // 인증이 완료되었으므로 저장된 데이터 삭제
+    this.verificationCodes.delete(email);
+    return;
   }
 
   /**
