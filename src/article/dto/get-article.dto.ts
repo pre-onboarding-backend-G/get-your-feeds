@@ -1,11 +1,10 @@
 import { Type } from 'class-transformer';
-import { IsOptional, IsInt, IsNumber, IsString } from 'class-validator';
+import { IsOptional, IsInt, IsString } from 'class-validator';
 
 export class RequestPaginatedQueryDto {
   @IsInt()
   @Type(() => Number)
   @IsOptional()
-  @IsNumber()
   page?: number;
 
   @IsInt()
