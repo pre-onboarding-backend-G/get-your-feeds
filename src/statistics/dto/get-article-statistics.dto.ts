@@ -61,7 +61,7 @@ export class GetArticleStatisticsDto {
   @ApiProperty({
     description:
       'periodType이 hour일 때, 조회 기간의 끝 "시간"이 되며, 최대 7일을 조회할 수 있습니다. periodType이 date일 때, 조회 기간의 끝 "일자"가 되며, 최대 30일을 조회할 수 있습니다. periodType이 date일 경우 끝 일자의 시간은 생략할 수 있습니다.',
-    example: '2023-10-16T00:00:00.000Z',
+    example: '2023-10-21T00:00:00.000Z',
     required: true,
   })
   @Expose()

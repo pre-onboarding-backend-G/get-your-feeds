@@ -13,13 +13,19 @@ export class StatisticsController {
   @ApiOperation({
     summary: '게시물 통계 조회 api',
     description:
-      '일정 기간 동안의 sns 게시물의 통계(게시물 수, 조회 수, 좋아요 수, 공유 된 횟수)를 1일 단위로 혹은 1시간 단위로 조회할 수 있는 기능입니다.',
-    parameters: [{ name: 'hashtags', in: 'query', required: false }],
+      '일정 기간 동안, 특정 해시태그를 가진 sns 게시물의 통계(게시물 수, 조회 수, 좋아요 수, 공유 된 횟수)를 1일 단위로 혹은 1시간 단위로 조회할 수 있는 기능입니다. 해시태그 값이 없으면 유저의 계정 태그를 default로 조회합니다.',
   })
-  @ApiOkResponse({ description: '', type: GetArticleStatisticsResDto })
+  @ApiOkResponse({
+    description:
+      '요청 성공 시, 데이터가 존재하는지 여부(isExistData)와 세부 통계 데이터(data)를 반환합니다.',
+    type: GetArticleStatisticsResDto,
+  })
+  // @AuthGuard()
   @Get('/articles')
   async getArticleStatistics(
-    @Req() req: Request,
+    @Req() // @GetUser
+    req: Request,
+
     @Query() dto: GetArticleStatisticsDto,
   ) {
     /**
@@ -27,11 +33,17 @@ export class StatisticsController {
      * @desc authGuard에서 주입해준 user의 accountTag를 넣기 위해 임시로 작성한 코드입니다.
      */
     const userAccountTag = 'test';
+    // const userAccountTag = user.accountTag
+
     return await this.statisticsService.getArticleStatistics(
       dto.setDefaultHashtag(userAccountTag).toObject(),
     );
   }
 
+  /**
+   * @authro 명석
+   * @todo 데이터 입력 후 create 로직 삭제 예정
+   */
   @Post('/articles')
   async createArticleStatistics(@Req() req: Request, @Res() res: Response) {
     const result = await this.statisticsService.create(req.body);
