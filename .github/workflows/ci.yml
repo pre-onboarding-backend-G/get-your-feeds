@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Install Dependencies
-        run: npm install
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -26,8 +24,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      # - name: Install Dependencies
-      #   run: npm install
+      - name: Install Dependencies
+        run: npm install
       - name: Run Tests with Coverage
         run: npm run test:cov
 
@@ -37,8 +35,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      # - name: Install Dependencies
-      #   run: npm install
+      - name: Install Dependencies
+        run: npm install
       - name: Run Format
         run: npm run format
       - name: Run Lint
