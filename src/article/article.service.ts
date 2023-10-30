@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
-import { Article, SnsType } from './schema/article.schema';
+import { Article, ArticleDocument, SnsType } from './schema/article.schema';
+import { GetArticleDetailResDto } from './dto/get-article-detail-res.dto';
 
 @Injectable()
 export class ArticleService {
@@ -61,9 +62,50 @@ export class ArticleService {
    * DMZ
    ***************************************************/
 
-  // 미종
+  // 미종 Place
 
-  findOne(id: number) {
-    return `This action returns a #${id} article`;
+  async findOneByContentId(
+    contentId: string
+  ): Promise<GetArticleDetailResDto> {
+    let ret: GetArticleDetailResDto;
+    let foundArticle: ArticleDocument = await this.articleModel.findOne({
+      contentId: contentId
+    });
+    if (foundArticle === null) {
+      throw new NotFoundException(`Article not found.`);
+    }
+    // console.log(foundArticle);
+    foundArticle.viewCount += 1;
+    foundArticle = await foundArticle.save();
+    ret = {
+      contentId: foundArticle.contentId,
+      title: foundArticle.title,
+      type: foundArticle.type,
+      content: foundArticle.content,
+      hashtags: foundArticle.hashtags,
+      viewCount: foundArticle.viewCount,
+      likeCount: foundArticle.likeCount,
+      shareCount: foundArticle.shareCount,
+    };
+    return ret;
+  }
+
+  async sendShareByContentId(
+    contentId: string
+  ): Promise<void> {
+    let foundArticle: ArticleDocument = await this.articleModel.findOne({
+      contentId: contentId
+    });
+    if (foundArticle === null) {
+      throw new NotFoundException(`Article not found.`);
+    }
+    let endpontToReq: string 
+      = "https://www." + foundArticle.type 
+      + ".com/share/" + contentId;
+    // NOTE : HTTP Module 이용해서 endpointToReq으로 호출하고 성공했다고 가정 (response status 200)
+    endpontToReq;
+    foundArticle.shareCount += 1;
+    foundArticle = await foundArticle.save();
+    return ;
   }
 }
