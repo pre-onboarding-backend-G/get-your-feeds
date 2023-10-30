@@ -2,6 +2,7 @@ import { ConflictException, Injectable, Res, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { RegisterUserDto } from 'src/user/dto/registerUserDto';
 import { User } from 'src/user/schema/user.schema';
 
 @Injectable()
@@ -36,7 +37,7 @@ export class AuthService {
     return null;
   }
 
-  async tempRegister(registerUserDto: RegisterUserDto): Promise<User> {
+  async Register(registerUserDto: RegisterUserDto): Promise<User> {
     const { email, password, connectedServices } = registerUserDto;
     const existingUser = await this.userModel.findOne({ email });
     if (existingUser) {

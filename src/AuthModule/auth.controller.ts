@@ -16,7 +16,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Response } from 'express';
 import { GetUser } from './decorators/user.decorator';
 import { User } from 'src/user/schema/user.schema';
-import { RegisterUserDto } from 'src/user/dto/RegisterUserDto';
+import { RegisterUserDto } from 'src/user/dto/registerUserDto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -107,7 +107,7 @@ export class AuthController {
 
   @ApiBody({ type: RegisterUserDto })
   @Post('register')
-  async tempRegister(
+  async Register(
     @Body(ValidationPipe) registerUserDto: RegisterUserDto,
     @Res() res: Response,
   ) {
