@@ -65,15 +65,19 @@ export class ArticleService {
       queryBuilder.where('hashtags').in([hashtag]);
     }
     return queryBuilder
-
   }
 
   async sendLikeByContentId(contentId: string): Promise<void> {
-    const article = await this.articleModel.findOne({ contentId }).exec();
+    const article = await this.articleModel
+      .findOne({})
+      .where('contentId').equals(contentId)
+
     if (!article) {
       throw new NotFoundException('게시물을 찾을 수 없습니다.');
     }
+
     article.likeCount += 1;
+
     await article.save();
   }
 
