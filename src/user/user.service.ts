@@ -1,4 +1,8 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Model } from 'mongoose';
 import { User } from './schema/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -42,5 +46,13 @@ export class UserService {
 
   async getUserByEmail(email: string) {
     return this.userModel.findOne({ email });
+  }
+
+  async getAllAccountTags(userId: string): Promise<string[]> {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
+    }
+    return user.connectedServices.map((service) => service.accountTag);
   }
 }

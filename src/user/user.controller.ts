@@ -4,9 +4,15 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
+import { JwtAuthGuard } from 'src/AuthModule/guards/jwt-auth.guard';
+import { GetUser } from 'src/AuthModule/decorators/user.decorator';
+import { User } from './schema/user.schema';
 
 @Controller('user')
 export class UserController {
@@ -30,5 +36,11 @@ export class UserController {
     const existingUser = await this.userService.getUserByEmail(email);
 
     return existingUser.email;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('account-tags')
+  async getAllAccountTags(@GetUser() user: User): Promise<string[]> {
+    return this.userService.getAllAccountTags(user.id);
   }
 }
