@@ -109,20 +109,21 @@ export class AuthController {
   @Post('register')
   async Register(
     @Body(ValidationPipe) registerUserDto: RegisterUserDto,
-    @Res() res: Response,
-  ) {
-    try {
-      const createdUser = await this.authService.register(registerUserDto);
-      const token = await this.authService.login(createdUser);
-      res.status(HttpStatus.CREATED).json({ token });
-    } catch (error) {
-      if (error.status === HttpStatus.CONFLICT) {
-        res.status(HttpStatus.CONFLICT).json({ message: error.message });
-      } else {
-        res
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .json({ message: '서버 오류' });
-      }
-    }
+  ): Promise<void> {
+    await this.authService.register(registerUserDto);
+  }
+
+  @Post('verify')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: { type: 'string', example: 'example@example.com' },
+        code: { type: 'string', example: '123456' },
+      },
+    },
+  })
+  async verify(@Body() body: { email: string; code: string }): Promise<void> {
+    return this.authService.verify(body.email, body.code);
   }
 }
