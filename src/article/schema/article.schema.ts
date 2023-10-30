@@ -5,7 +5,7 @@ import { generateNoDashUUID } from '../../common/util/uuid.util';
 export enum SnsType {
   Facebook = 'facebook',
   Twitter = 'twitter',
-  instagram = 'instagram',
+  Instagram = 'instagram',
   Threads = 'threads',
 }
 

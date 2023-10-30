@@ -4,6 +4,8 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { RequestPaginatedQueryDto } from './dto/get-article.dto';
 import { GetArticleResDto } from './dto/get-article-res.dto';
 import { Page } from '../common/page';
+import { GetArticleDetailResDto } from './dto/get-article-detail-res.dto';
+import { CreateArticleShareDto } from './dto/create-article-share.dto';
 
 @Controller('articles')
 export class ArticleController {
@@ -46,13 +48,17 @@ export class ArticleController {
 
   // 미종 Place
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.articleService.findOne(+id);
-  // }
+  @Get(':contentId')
+  async findOne(
+    @Param('contentId') contentId: string
+  ): Promise<GetArticleDetailResDto> {
+    return await this.articleService.findOneByContentId(contentId);
+  }
 
-  // @Post()
-  // createShare() {
-  //   return ;
-  // }
+  @Post('share')
+  async sendShare(
+    @Body() dto: CreateArticleShareDto
+  ) {
+    return await this.articleService.sendShareByContentId(dto.contentId);
+  }
 }
