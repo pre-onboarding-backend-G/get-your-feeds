@@ -1,11 +1,5 @@
 # 🚀 Get Your Feeds 개발과정 🚀
 
-## 📘 API Documentation
-
-- 👉 [Swagger Documentation](https://wante-preonboarding-backend.onrender.com/api-docs#/)
-
-- 🚀 배포 주의사항 (클릭 후 약간의 대기 시간이 있을 수 있습니다. 콜드스타트 현상)
-
 ## 📚 기술 스택
 
 [![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
@@ -38,7 +32,6 @@
 
 ## 🗺️ ERD
 
-![ERD Diagram](erd.png)
 
 ## 🛠️ 데이터 모델 설계
 
@@ -230,6 +223,6 @@ project-root
 **Response:** The email of the fetched user as a string.
 
 
-## 🏁 마무리와 배운 점
+## 🏁 마무리와 배운 점 (팀장)
 
-- NestJS를 처음 사용하는 과정은 새로운 도전이었지만, 이러한 도전이 개발자로서 성장을 이끄는 원동력 중 하나라고 믿습니다. 스프링과 비슷한 개념을 가지고 있어서 스프링 개발자에게 친숙하게 다가올 수 있었습니다. 또한 TypeScript와 모듈 시스템을 통한 코드 구성은 코드의 가독성과 재사용성을 높여주었습니다.
+- 
