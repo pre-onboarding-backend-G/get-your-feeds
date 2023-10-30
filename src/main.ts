@@ -4,7 +4,7 @@ import { HttpExceptionFilter } from './common/filter/http-exception.filter';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
   const config = new DocumentBuilder()
