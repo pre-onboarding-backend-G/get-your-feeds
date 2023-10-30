@@ -10,8 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { JwtAuthGuard } from 'src/AuthModule/guards/jwt-auth.guard';
-import { GetUser } from 'src/AuthModule/decorators/user.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { GetUser } from 'src/auth/decorators/user.decorator';
 import { User } from './schema/user.schema';
 
 @Controller('user')
