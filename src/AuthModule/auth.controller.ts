@@ -125,6 +125,17 @@ export class AuthController {
       }
     }
   }
+
+  @Post('token/access')
+  postTokenAccess(@Headers('authorization') rawToken: string) {
+    const token = this.authService.extractTokenFromHeader(rawToken, true);
+
+    const newToken = this.authService.rotateToken(token, false);
+
+    return {
+      accessToken: newToken,
+    };
+  }
 }
 
 // /////////////////////////////////////////////////////////////////

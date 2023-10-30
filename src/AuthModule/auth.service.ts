@@ -1,15 +1,23 @@
-import { ConflictException, Injectable, Res, HttpStatus } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  Res,
+  HttpStatus,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RegisterUserDto } from 'src/user/dto/registerUserDto';
 import { User } from 'src/user/schema/user.schema';
 import * as bcrypt from 'bcryptjs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
+    private readonly configService: ConfigService,
     @InjectModel('User') private userModel: Model<User>,
   ) {}
 
@@ -54,6 +62,78 @@ export class AuthService {
     await createdUser.save();
     return createdUser;
   }
+
+  /**
+   * 토큰 재발급.
+   *    - 에러 처리 : accessToken인 경우
+   *
+   * @param token
+   * @param isRefreshToken
+   * @returns refreshToken
+   *
+   * @author SangUn Lee
+   */
+  rotateToken(token: string, isRefreshToken: boolean) {
+    const jwtSecret = this.configService.get<string>('JWT_SECRET');
+    const payload = this.jwtService.verify(token, {
+      secret: jwtSecret,
+    });
+    if (payload.type !== 'refresh')
+      throw new UnauthorizedException('토큰 재발급은 refresh 토큰으로만 가능');
+
+    return this.signToken(payload.email, payload.id, isRefreshToken);
+  }
+
+  /**
+   * email, id를 입력받아 JWT를 발급.
+   *    - payload : email, id, type
+   *    - 토큰 만료 시간
+   *        - accessToken : 1h
+   *        - refreshToken : 10h
+   *
+   * @param email
+   * @param id
+   * @param isRefreshToken
+   * @returns token
+   *
+   * @author SangUn Lee
+   */
+  signToken(email: string, id: number, isRefreshToken: boolean) {
+    const jwtSecret = this.configService.get<string>('JWT_SECRET');
+    const payload = {
+      email: email,
+      sub: id,
+      type: isRefreshToken ? 'refresh' : 'access',
+    };
+    return this.jwtService.sign(payload, {
+      secret: jwtSecret,
+      expiresIn: isRefreshToken ? 36000 : 3600,
+    });
+  }
+
+  /**
+   * 요청 헤더에서 토큰을 추출.
+   *    - 공백 기준으로 문자열 나누기
+   *    - Bearer, Basic 판단
+   *    - 에러 처리 : 나눈 문자열의 길이가 2가 아니거나 입력받은 접두어가 잘못된 경우
+   *
+   * @param header
+   * @param isBearer
+   * @returns token
+   *
+   * @author SangUn Lee
+   */
+  extractTokenFromHeader(header: string, isBearer: boolean) {
+    const splitToken = header.split(' ');
+    const prefix = isBearer ? 'Bearer' : 'Basic';
+
+    if (splitToken.length !== 2 || splitToken[0] !== prefix)
+      throw new UnauthorizedException('잘못된 토큰');
+
+    const token = splitToken[1];
+
+    return token;
+  }
 }
 
 // import {
@@ -92,30 +172,6 @@ export class AuthService {
 //   }
 
 //   /**
-//    * 요청 헤더에서 토큰을 추출.
-//    *    - 공백 기준으로 문자열 나누기
-//    *    - Bearer, Basic 판단
-//    *    - 에러 처리 : 나눈 문자열의 길이가 2가 아니거나 입력받은 접두어가 잘못된 경우
-//    *
-//    * @param header
-//    * @param isBearer
-//    * @returns token
-//    *
-//    * @author SangUn Lee
-//    */
-//   extractTokenFromHeader(header: string, isBearer: boolean) {
-//     const splitToken = header.split(' ');
-//     const prefix = isBearer ? 'Bearer' : 'Basic';
-
-//     if (splitToken.length !== 2 || splitToken[0] !== prefix)
-//       throw new UnauthorizedException('잘못된 토큰');
-
-//     const token = splitToken[1];
-
-//     return token;
-//   }
-
-//   /**
 //    * base64로 인코딩된 email:password를 utf-8로 변환.
 //    *    - Basic token은 email:password를 base64로 인코딩
 //    *
@@ -139,27 +195,6 @@ export class AuthService {
 //       email,
 //       password,
 //     };
-//   }
-
-//   /**
-//    * 토큰 재발급.
-//    *    - 에러 처리 : accessToken인 경우
-//    *
-//    * @param token
-//    * @param isRefreshToken
-//    * @returns refreshToken
-//    *
-//    * @author SangUn Lee
-//    */
-//   rotateToken(token: string, isRefreshToken: boolean) {
-//     const jwtSecret = this.configService.get<string>('JWT_SECRET_KEY');
-//     const payload = this.jwtService.verify(token, {
-//       secret: jwtSecret,
-//     });
-//     if (payload.type !== 'refresh')
-//       throw new UnauthorizedException('토큰 재발급은 refresh 토큰으로만 가능');
-
-//     return this.signToken(payload.email, payload.id, isRefreshToken);
 //   }
 
 //   /**
