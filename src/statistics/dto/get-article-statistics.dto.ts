@@ -1,3 +1,4 @@
+import { User } from './../../user/schema/user.schema';
 import { ArticleStatisticsValues } from './../statistics.type';
 import { ApiProperty } from '@nestjs/swagger';
 import {
@@ -90,8 +91,14 @@ export class GetArticleStatisticsDto {
    * @param defaultHashtag dto의 hashtag 값이 없을 때 default로 넣어줄 accountTag입니다.
    * @returns this
    */
-  setDefaultHashtag(defaultHashtag: string): this {
-    if (this.isEmptyHashtags()) this.hashtags = [defaultHashtag];
+  setDefaultHashtag(user: User): this {
+    if (this.isEmptyHashtags()) {
+      this.hashtags = user.connectedServices.map(
+        ({ accountTag }: { service: string; accountTag: string }) => {
+          return accountTag;
+        },
+      );
+    }
     return this;
   }
 

@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Query, Req, Res } from '@nestjs/common';
+import { User } from './../user/schema/user.schema';
+import { GetUser } from './../auth/decorators/user.decorator';
+import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { StatisticsService } from './statistics.service';
 import { Request, Response } from 'express';
 import { GetArticleStatisticsDto } from './dto/get-article-statistics.dto';
@@ -20,23 +31,14 @@ export class StatisticsController {
       '요청 성공 시, 데이터가 존재하는지 여부(isExistData)와 세부 통계 데이터(data)를 반환합니다.',
     type: GetArticleStatisticsResDto,
   })
-  // @AuthGuard()
+  @UseGuards(JwtAuthGuard)
   @Get('/articles')
   async getArticleStatistics(
-    @Req() // @GetUser
-    req: Request,
-
+    @GetUser() user: User,
     @Query() dto: GetArticleStatisticsDto,
-  ) {
-    /**
-     * @author 명석
-     * @desc authGuard에서 주입해준 user의 accountTag를 넣기 위해 임시로 작성한 코드입니다.
-     */
-    const userAccountTag = 'test';
-    // const userAccountTag = user.accountTag
-
+  ): Promise<GetArticleStatisticsResDto> {
     return await this.statisticsService.getArticleStatistics(
-      dto.setDefaultHashtag(userAccountTag).toObject(),
+      dto.setDefaultHashtag(user).toObject(),
     );
   }
 
@@ -45,7 +47,10 @@ export class StatisticsController {
    * @todo 데이터 입력 후 create 로직 삭제 예정
    */
   @Post('/articles')
-  async createArticleStatistics(@Req() req: Request, @Res() res: Response) {
+  async createArticleStatistics(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<void> {
     const result = await this.statisticsService.create(req.body);
     res.status(201).json(result);
   }
