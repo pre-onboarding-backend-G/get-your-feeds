@@ -178,32 +178,6 @@ export class AuthService {
 //   }
 
 //   /**
-//    * base64로 인코딩된 email:password를 utf-8로 변환.
-//    *    - Basic token은 email:password를 base64로 인코딩
-//    *
-//    * @param base64String
-//    * @returns {email, password}
-//    *
-//    * @author SangUn Lee
-//    */
-//   decodeBasicToken(base64String: string) {
-//     const decoded = Buffer.from(base64String, 'base64').toString('utf-8');
-
-//     const split = decoded.split(':');
-
-//     if (split.length !== 2)
-//       throw new UnauthorizedException('잘못된 유형의 토큰');
-
-//     const email = split[0];
-//     const password = split[1];
-
-//     return {
-//       email,
-//       password,
-//     };
-//   }
-
-//   /**
 //    * email, id를 입력받아 JWT를 발급.
 //    *    - payload : email, id, type
 //    *    - 토큰 만료 시간
