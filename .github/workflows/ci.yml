@@ -7,40 +7,42 @@ on:
     branches: [feature/*, main]
 
 jobs:
-  nest-test:
+  checkout-code:
     runs-on: ubuntu-latest
-    
-    env:
-      NODE_ENV: local
-      ALLOWED_ORIGIN: http://localhost:5173,http://127.0.0.1:5173
-      DATABASE_NAME: db
-      DATABASE_USER: admin
-      DATABASE_PASS: admin
-      DATABASE_URI: mongodb://database:27017
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
-      ME_CONFIG_MONGODB_URL: mongodb://admin:admin@database:27017
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Docker compose Build
-        run: docker-compose build
+  setup-node:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-      - name: Start Docker Compose
-        run: docker-compose up -d
+  install-dependencies:
+    runs-on: ubuntu-latest
+    needs: [checkout-code, setup-node]
+    steps:
+      - name: Install Dependencies
+        run: npm install
 
-      - name: Run Tests with Coverage using Docker Compose
-        run: docker-compose run nest-app npm run test:cov
+  run-tests:
+    runs-on: ubuntu-latest
+    needs: [install-dependencies]
+    steps:
+      - name: Run Tests with Coverage
+        run: npm run test:cov
 
-      - name: Run Format using Docker Compose
-        run: docker-compose run nest-app npm run format
-
-      - name: Run Lint using Docker Compose
-        run: docker-compose run nest-app npm run lint
-
-      - name: Shut down Docker Compose
-        run: docker-compose down
+  run-format-lint:
+    runs-on: ubuntu-latest
+    needs: [install-dependencies]
+    steps:
+      - name: Run Format
+        run: npm run format
+      - name: Run Lint
+        run: npm run lint
