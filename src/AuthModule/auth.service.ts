@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RegisterUserDto } from 'src/user/dto/registerUserDto';
 import { User } from 'src/user/schema/user.schema';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
@@ -43,48 +44,16 @@ export class AuthService {
     if (existingUser) {
       throw new ConflictException('이미 존재하는 이메일입니다.');
     }
-    // To do : 비밀번호 암호화
+    const hash = await bcrypt.hash(password, 10);
 
     const createdUser = new this.userModel({
       email,
-      password, // 암호화된 비밀번호로 변경
+      hash,
       connectedServices,
     });
     await createdUser.save();
     return createdUser;
   }
-
-  //   /**
-  //    * 회원가입.
-  //    *    - 비밀번호 검증
-  //    *    - 비밀번호 암호화
-  //    *    - 입력받은 정보와 암호화한 비밀번호 저장(회원가입)
-  //    *
-  //    * @param email
-  //    * @param password
-  //    * @param service
-  //    * @param userHashtag
-  //    * @returns accessToken, refreshToken
-  //    *
-  //    * @author SangUn Lee
-  //    */
-  //   async registerWithEmail(
-  //     email: string,
-  //     password: string,
-  //     service: string,
-  //     userHashtag: string,
-  //   ) {
-  //     this.verifyPassword(email, password, userHashtag);
-
-  //     const hash = await bcrypt.hash(password, 10);
-  //     // const hash = password;
-
-  //     const newUser = await this.usersService.createUser(
-  //       email,
-  //       hash,
-  //       service,
-  //       userHashtag,
-  //     );
 }
 
 // import {
