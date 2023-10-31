@@ -55,12 +55,11 @@ Get Your Feeds는 소셜 미디어 통합 Feed 서비스입니다.
 
 ### 3️⃣ 사용자(User)
 
-| 필드               | 속성                                              | 설명                     | 예시 값                                        |
-|------------------|-------------------------------------------------|------------------------|----------------------------------------------|
-| email            | `unique: true`                                  | 사용자의 이메일 주소          | "user@example.com"                          |
-| password         |                                                   | 사용자의 비밀번호             | "SecureP@ssw0rd1"                            |
-| connectedServices| `Array of { service: String, accountTag: String }` | 연결된 소셜 미디어 서비스들      | [{ service: "twitter", accountTag: "@user" }] |
-
+| 필드              | 속성                                               | 설명                        | 예시 값                                       |
+| ----------------- | -------------------------------------------------- | --------------------------- | --------------------------------------------- |
+| email             | `unique: true`                                     | 사용자의 이메일 주소        | "user@example.com"                            |
+| password          |                                                    | 사용자의 비밀번호           | "SecureP@ssw0rd1"                             |
+| connectedServices | `Array of { service: String, accountTag: String }` | 연결된 소셜 미디어 서비스들 | [{ service: "twitter", accountTag: "@user" }] |
 
 <br>
 
@@ -152,54 +151,54 @@ project-root
 
 #### 1. 게시물 목록 조회 : Feed에 나타나는 게시물 목록 조회 API
 
-**Endpoint:** `GET /articles`  
-**Method:** `GET`  
-**Description:** Fetch a paginated list of articles.  
-**Query Parameters:** RequestPaginatedQueryDto (pagination parameters)  
+**Endpoint:** `GET /articles`
+**Method:** `GET`
+**Description:** Fetch a paginated list of articles.
+**Query Parameters:** RequestPaginatedQueryDto (pagination parameters)
 **Response:** `Page<GetArticleResDto>`
 
 <br>
 
 #### 2. 게시물 생성 :
 
-**Endpoint:** `POST /articles`  
-**Method:** `POST`  
-**Description:** Create a new article.  
-**Request Body:** `CreateArticleDto`  
+**Endpoint:** `POST /articles`
+**Method:** `POST`
+**Description:** Create a new article.
+**Request Body:** `CreateArticleDto`
 **Response:** The content ID of the created article as a string.
 
 <br>
 
 #### 3. 게시물 상세 조회 : 게시물 목록 클릭 시, 사용되는 게시물 상세 내용 조회 API
 
-**Endpoint:** `GET /articles/likes/:contentId`  
-**Method:** `GET`  
-**Description:** Send a like to an article by its content ID.  
+**Endpoint:** `GET /articles/likes/:contentId`
+**Method:** `GET`
+**Description:** Send a like to an article by its content ID.
 **Path Parameters:**
 
-- `contentId`: The content ID of the article.  
+- `contentId`: The content ID of the article.
   **Response:** The content ID of the liked article as a string.
 
 <br>
 
 #### 4. 게시물 좋아요 생성 : 게시물 목록 또는 상세에서 게시물 좋아요 클릭 시 사용되는 API
 
-**Endpoint:** `GET /articles/:contentId`  
-**Method:** `GET`  
-**Description:** Fetch a specific article using its content ID.  
+**Endpoint:** `GET /articles/:contentId`
+**Method:** `GET`
+**Description:** Fetch a specific article using its content ID.
 **Path Parameters:**
 
-- `contentId`: The content ID of the article.  
+- `contentId`: The content ID of the article.
   **Response:** `GetArticleDetailResDto`
 
 <br>
 
 #### 5. 게시물 공유 생성 : 게시물 목록 또는 상세에서 공유하기 클릭 시 사용되는 APIGet Paginated Article List
 
-**Endpoint:** `POST /articles/share`  
-**Method:** `POST`  
-**Description:** Send a share notification for an article by its content ID.  
-**Request Body:** `CreateArticleShareDto`  
+**Endpoint:** `POST /articles/share`
+**Method:** `POST`
+**Description:** Send a share notification for an article by its content ID.
+**Request Body:** `CreateArticleShareDto`
 **Response:** None (void).
 
 ---
@@ -208,10 +207,10 @@ project-root
 
 #### 1. 게시물 통계 데이터 조회 : 해시태그(hashtag)로 검색된 게시물의 시계열 통계 지표(게시물 생성, 조회, 좋아요, 공유 등의 수)를 조회 할 때 사용되는 API
 
-**Endpoint:** `GET /articles`  
-**Method:** `GET`  
-**Description:** Retrieve statistics for articles over a specific period.  
-**Query Parameters:** `GetArticleStatisticsDto`  
+**Endpoint:** `GET /articles`
+**Method:** `GET`
+**Description:** Retrieve statistics for articles over a specific period.
+**Query Parameters:** `GetArticleStatisticsDto`
 **Response:** `GetArticleStatisticsResDto`
 
 ---
@@ -220,51 +219,33 @@ project-root
 
 #### 1. 사용자 회원가입 요청 : 사용자 회원가입 요청에 사용되는 API. 회원가입 요청 이후 6자리의 랜덤한 코드가 입력한 이메일로 발송됩니다.
 
-**Endpoint:** `POST /register`  
-**Method:** `POST`  
-**Description:** Register a new user.  
-**Request Body:** `RegisterUserDto`  
-**Response:** None (void).
+**Endpoint:** `POST auth/register`
+**Method:** `POST`
+**Description:** Register a new user.
+**Request Body:** `RegisterUserDto`
+**Response:** Status 200 code
 
 <br>
 
 #### 2. 사용자 가입 승인 : 사용자 회원 가입 요청을 승인하는 API. 회원 가입 요청자의 이메일로 전송된 코드와 사용자 정보를 검증하여 가입 승인 처리합니다.
 
-**Endpoint:** `POST /verify`  
-**Method:** `POST`  
-**Description:** Verify a user's email with a code.  
-**Request Body:**
+**Endpoint:** `POST auth/verify`
+**Method:** `POST`
+**Description:** Verify a user's email with a code.
+**Response:** Status 200 code
 
 - `email`: The user's email.
-- `code`: The verification code.  
-  **Response:** None (void).
+- `code`: The verification code.
 
 <br>
 
 #### 3. 사용자 로그인 : 사용자가 계정, 비밀번호로 로그인 시 엑세스 토큰(JWT)을 발급하는 API
 
-**Endpoint:** `POST /login`  
-**Method:** `POST`  
-**Description:** Authenticate and login a user.  
-**Request Body:** User credentials.  
+**Endpoint:** `POST auth/login`
+**Method:** `POST`
+**Description:** Authenticate and login a user.
+**Request Body:** User credentials.
 **Response:** HTTP 200 status code with an Authorization header containing the Bearer token.
-
-<br>
-
-## User Operations
-
-### 1. Create User
-
-**Endpoint:** `POST /user`  
-**Method:** `POST`  
-**Description:** Create a new user.  
-**Request Body:**
-
-- `email`: The user's email.
-- `password`: The user's password.
-- `service`: The service associated with the user.
-- `userHashtag`: The user's hashtag.  
-  **Response:** None (void).
 
 <br>
 
@@ -287,3 +268,9 @@ project-root
 - NestJS의 적응 과정 : 처음에는 NestJS의 구조화된 접근 방식이 Express의 자유도에 비해 불편하게 느껴졌다.단순한 개발을 넘어서 구조 자체를 이해하는 데에도 시간이 소요되었다. 그러나 프로젝트 구조에 익숙해지며 NestJS의 장점을 점차 느끼게 되었다. 특히 유지 보수의 관점에서 보면, 지나치게 높은 자유도는 오히려 관리의 어려움을 초래할 수 있다는 것을 깨달았다. 이 과정에서 Guard와 같은 NestJS Enhancers의 중요성에 대해 학습하게 되었다.
 
 - 팀원 간의 커뮤니케이션 중요성 : 프로젝트를 진행하면서 커뮤니케이션의 중요성을 깊게 깨달았다. 단순한 말로의 전달은 상대방에게 100% 정확히 도달하지 않는 경우가 많았다. 그것보다는 그림이나 코드를 통한 소통은 훨씬 더 명확하고 효율적이라는 것을 느꼈다. 초기에는 빠르게 진행되는 것처럼 보이는 커뮤니케이션이 나중에 잘못된 이해로 인해 큰 시간과 비용을 소모할 수 있다는 것을 경험했다. 특히 이번 프로젝트에서는 Service 로직에 JWT 관련 코드를 구현했으나 완전히 반영되지 않는 문제점에 직면했다. 추가로, JWT 사용 전략의 차이로 인해 코드 충돌이 발생하여 그 해결에도 상당한 시간과 노력이 소요되었다.
+
+### 호준
+
+- 유저와 인증을 분리해서 개발해본 경험 : 인증은 이번 프로젝트 말고도 다른 프로젝트에서 매번 맡아 진행했고, Oauth2.0, Refresh Token, 세션인증방식 여러가지 해보았다고 자신했던 부분이지만, 정작 이번 프로젝트에서는 소통의 문제로 서로 어려운 길을 가게 되었다. NestJS의 Guard와 Strategy 개념은 나름, 익숙하게 잘 개발했던 것 같다. 다만, 협업하는 개발자와 소통의 부재로, 다른 JWT 전략을 구사하는 등. 이번 기회로, 코드를 개발을 잘하는 것보다 소통하며 개발해야겠다는 생각이 들게 되었던 경험이다.
+
+- MongoDB의 정규화 / 비정규화 모델 : NoSQL로 대부분의 프로젝트를 개발했던 경험이 있지만, 팀원들과 소통할 때 비정규화, 정규화를 이 개념을 어떻게 설명해야할 지 몰라서 찾아보았다. 이 모델링의 개념을 실제로 프로젝트에서 어떤 개념인지 자세하게 모르고 모델링을 했었는데, 이번 기회에 짚고 넘어갈 수 있었다.
