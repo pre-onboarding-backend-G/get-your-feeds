@@ -173,13 +173,19 @@ project-root
 #### 3. 게시물 상세 조회 : 게시물 목록 클릭 시, 사용되는 게시물 상세 내용 조회 API
 
 **Endpoint:** `GET /articles/:contentId`  
+
 **Method:** `GET`  
+
 **Description:** 유저가 게시물을 클릭 시 view_count 가 1 증가하고 게시물의 모든 필드 값을 확인하는데 사용되는 API
 
 **Path Parameters:**
+
 - `contentId`: 게시물의 Content ID.
 
-**Response:** `GetArticleDetailResDto`
+**Response:** 
+
+- response status 200, `GetArticleDetailResDto`
+
 | field | 속성 | 설명 |예시|
 | --- | --- | --- | --- |
 | contentId | string | 해당 게시물 Content ID |  |
@@ -190,6 +196,9 @@ project-root
 | viewCount | number | 해당 게시물의 조회수 | 300 |
 | likeCount | number | 해당 게시물의 좋아요수 | 30 |
 | shareCount | number | 해당 게시물의 공유수 | 10 |
+
+- response status 404 (해당 게시물이 존재하지 않을시)
+
 
 <br>
 
@@ -205,13 +214,24 @@ project-root
 
 <br>
 
-#### 5. 게시물 공유 생성 : 게시물 목록 또는 상세에서 공유하기 클릭 시 사용되는 APIGet Paginated Article List
+#### 5. 게시물 공유 생성 : 게시물 목록 또는 상세에서 공유하기 클릭 시 사용되는 API
 
 **Endpoint:** `POST /articles/share`  
+
 **Method:** `POST`  
-**Description:** Send a share notification for an article by its content ID.  
-**Request Body:** `CreateArticleShareDto`  
-**Response:** None (void).
+
+**Description:** 각 게시물이 관리되는 SNS 별 특정된 API 를 호출하고 성공할 시 (response status 200) 해당 게시물의 share_count가 1 증가
+
+**Request Body:** `CreateArticleShareDto` 
+
+| field | 속성 | 설명 |예시|
+| --- | --- | --- | --- |
+| contentId | string | 해당 게시물 Content ID |  |
+
+**Response:** 
+
+- response status 200, None(void)
+- response status 404 (해당 게시물이 존재하지 않을시)
 
 ---
 
