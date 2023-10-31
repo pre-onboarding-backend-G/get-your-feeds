@@ -268,14 +268,6 @@ project-root
 
 <br>
 
-### 2. Get User by Email
-
-**Endpoint:** `GET /`  
-**Method:** `GET`  
-**Description:** Fetch a user using their email.  
-**Request Body:** `email` - The user's email.  
-**Response:** The email of the fetched user as a string.
-
 ---
 
 ## 🏁 마무리와 배운 점
