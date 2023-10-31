@@ -213,6 +213,7 @@ project-root
 ---
 
 ### 게시물 통계(Statistics)
+<<<<<<< HEAD
 
 #### 1. 게시물 통계 데이터 조회
 
@@ -228,6 +229,23 @@ project-root
 | endDate | date | 오늘 | periodType이 hour일 때, 조회 기간의 끝 "시간"이 되며, 최대 7일을 조회할 수 있습니다. periodType이 date일 때, 조회 기간의 끝 "일자"가 되며, 최대 30일을 조회할 수 있습니다. <br> periodType이 date일 경우 끝 일자의 시간은 생략할 수 있습니다.||
 | value | enum | count |'어떤 통계 지표를 검색 할 지 선택하는 값 입니다. 게시물 수(count), 게시물 조회수(viewCount), 게시물 좋아요 수(likeCount), 게시물 공유 수(s hareCount)를 선택할 수 있습니다.||
 
+=======
+
+#### 1. 게시물 통계 데이터 조회
+
+**Endpoint:** `GET /statistics/articles`  
+**Method:** `GET`  
+**Description:** 해시태그(hashtag)로 검색된 게시물의 시계열 통계 지표(게시물 생성, 조회, 좋아요, 공유 등의 수)를 조회 할 때 사용되는 API
+**Query Parameters:** `GetArticleStatisticsDto`  
+| query | 속성 | default(미입력 시 값) | 설명 |예시|
+| --- | --- | --- | --- |---|
+| hashtags | string[] | sns의 계정태그 | 게시물 통계 검색을 희망하는 해시태그(string)입니다. 여러개의 해시태그를 검색하는 경우 공백(white space) 없이 컴마(,)로 구분합니다. <br> 해시태그를 보내지 않는 경우, 유저의 계정태그(accountTag)로 검색됩니다.'|'apple,mobile,WWDC'|
+| periodType | string (열거형) | 필수 값 | 게시물 통계 검색 시 설정하는 조회 기간 유형입니다. 열거형으로 'date','hour'입니다. <br> 1시간 단위 검색은 hour이며 1일 단위 검색은 date입니다. ||
+| startDate | date | 오늘로 부터 7일전 | periodType이 hour일 때, 조회 기간의 시작 "시간"이 되며, periodType이 date일 때, 조회 기간의 시작"일자"가 됩니다. <br> periodType이 date일 경우 시작 일자의 시간은 생략할 수 있습니다. ||
+| endDate | date | 오늘 | periodType이 hour일 때, 조회 기간의 끝 "시간"이 되며, 최대 7일을 조회할 수 있습니다. periodType이 date일 때, 조회 기간의 끝 "일자"가 되며, 최대 30일을 조회할 수 있습니다. <br> periodType이 date일 경우 끝 일자의 시간은 생략할 수 있습니다.||
+| value | enum | count |'어떤 통계 지표를 검색 할 지 선택하는 값 입니다. 게시물 수(count), 게시물 조회수(viewCount), 게시물 좋아요 수(likeCount), 게시물 공유 수(s hareCount)를 선택할 수 있습니다.||
+
+>>>>>>> a42008441c0a1d67f5036d8e8bdf30b51e96e76f
 **Response:** `GetArticleStatisticsResDto`
 | field | 속성 | 설명 |예시|
 | --- | --- | --- | --- |
