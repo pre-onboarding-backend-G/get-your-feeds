@@ -28,20 +28,20 @@ Get Your Feeds는 소셜 미디어 통합 Feed 서비스입니다.
 
 ## 🛠️ Document 구조
 
-### 1️⃣ 게시글(Article)
+### 1️⃣ 게시물(Article)
 
 | 필드        | 속성            | 설명                                                                                      | 예시 값   |
 | ----------- | --------------- | ----------------------------------------------------------------------------------------- | --------- |
-| content_id  | 문자열          | 이는 포스트가 속한 SNS에서 관리하는 고유 인식 값입니다.                                   |           |
-| type        | 문자열 (열거형) | 파일 객체의 유형입니다. 가능한 값은 "facebook", "twitter", "instagram", "threads" 입니다. | "twitter" |
-| title       | 문자열          | 포스트 제목입니다.                                                                        |           |
-| content     | 문자열          | 이는 포스트의 내용이며 이미지, 비디오 등을 제외한 텍스트만 포함됩니다.                    |           |
-| hashtags    | 아무 값         | 여러 개의 해시태그가 있으므로 미래 검색을 고려하여 설계해 주십시오.                       |           |
-| view_count  | 숫자            | 조회수입니다.                                                                             | 100       |
-| like_count  | 숫자            | 좋아요 수입니다.                                                                          | 10        |
-| share_count | 숫자            | 공유 수입니다.                                                                            | 0         |
-| updated_at  | 날짜 및 시간    | 포스트를 편집할 때 자동으로 기록됩니다.                                                   |           |
-| created_at  | 날짜 및 시간    | 포스트를 생성할 때 자동으로 기록됩니다.                                                   |           |
+| content_id  | string(UUID)          | 이는 포스트가 속한 SNS에서 관리하는 고유 인식 값입니다.                                   |           |
+| type        | enum | 파일 객체의 유형입니다. 가능한 값은 "facebook", "twitter", "instagram", "threads" 입니다. | 'twitter' |
+| title       | string          | 포스트 제목입니다.                                                                        | 'hello, danishop!'          |
+| content     | string          | 이는 포스트의 내용이며 이미지, 비디오 등을 제외한 텍스트만 포함됩니다.                    | 'I visited the danishop'          |
+| hashtags    | string[]         | 여러 개의 해시태그가 있으므로 미래 검색을 고려하여 설계해 주십시오.                       | ['dani', 'danishop']          |
+| view_count  | number            | 조회수입니다.                                                                             | 100       |
+| like_count  | number            | 좋아요 수입니다.                                                                          | 10        |
+| share_count | number            | 공유 수입니다.                                                                            | 1         |
+| updated_at  | Date    | 포스트를 편집할 때 자동으로 기록됩니다.                                                   |           |
+| created_at  | Date    | 포스트를 생성할 때 자동으로 기록됩니다.                                                   |           |
 
 <br>
 
