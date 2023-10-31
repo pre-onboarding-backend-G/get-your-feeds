@@ -172,13 +172,24 @@ project-root
 
 #### 3. 게시물 상세 조회 : 게시물 목록 클릭 시, 사용되는 게시물 상세 내용 조회 API
 
-**Endpoint:** `GET /articles/likes/:contentId`  
+**Endpoint:** `GET /articles/:contentId`  
 **Method:** `GET`  
-**Description:** Send a like to an article by its content ID.  
-**Path Parameters:**
+**Description:** 유저가 게시물을 클릭 시 view_count 가 1 증가하고 게시물의 모든 필드 값을 확인하는데 사용되는 API
 
-- `contentId`: The content ID of the article.  
-  **Response:** The content ID of the liked article as a string.
+**Path Parameters:**
+- `contentId`: 게시물의 Content ID.
+
+**Response:** `GetArticleDetailResDto`
+| field | 속성 | 설명 |예시|
+| --- | --- | --- | --- |
+| contentId | string | 해당 게시물 Content ID |  |
+| title | string | 해당 게시물 제목 | 'NestJS Repository Pattern' |
+| type | string | 해당 게시물 SNS 출처 | 'twitter' |
+| content | string | 해당 게시물 내용 | 'Separation of dependencies is ...' |
+| hashtags | string[] | 해당 게시물의 해시태그들 | ['repository', 'pattern'] |
+| viewCount | number | 해당 게시물의 조회수 | 300 |
+| likeCount | number | 해당 게시물의 좋아요수 | 30 |
+| shareCount | number | 해당 게시물의 공유수 | 10 |
 
 <br>
 
