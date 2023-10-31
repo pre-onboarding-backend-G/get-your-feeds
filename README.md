@@ -32,16 +32,16 @@ Get Your Feeds는 소셜 미디어 통합 Feed 서비스입니다.
 
 | 필드        | 속성            | 설명                                                                                      | 예시 값   |
 | ----------- | --------------- | ----------------------------------------------------------------------------------------- | --------- |
-| content_id  | string(UUID)          | 이는 포스트가 속한 SNS에서 관리하는 고유 인식 값입니다.                                   |           |
+| contentId  | string(UUID)          | 이는 포스트가 속한 SNS에서 관리하는 고유 인식 값입니다.                                   |           |
 | type        | enum | 파일 객체의 유형입니다. 가능한 값은 "facebook", "twitter", "instagram", "threads" 입니다. | 'twitter' |
 | title       | string          | 포스트 제목입니다.                                                                        | 'hello, danishop!'          |
 | content     | string          | 이는 포스트의 내용이며 이미지, 비디오 등을 제외한 텍스트만 포함됩니다.                    | 'I visited the danishop'          |
 | hashtags    | string[]         | 여러 개의 해시태그가 있으므로 미래 검색을 고려하여 설계해 주십시오.                       | ['dani', 'danishop']          |
-| view_count  | number            | 조회수입니다.                                                                             | 100       |
-| like_count  | number            | 좋아요 수입니다.                                                                          | 10        |
-| share_count | number            | 공유 수입니다.                                                                            | 1         |
-| updated_at  | Date    | 포스트를 편집할 때 자동으로 기록됩니다.                                                   |           |
-| created_at  | Date    | 포스트를 생성할 때 자동으로 기록됩니다.                                                   |           |
+| viewCount  | number            | 조회수입니다.                                                                             | 100       |
+| likeCount  | number            | 좋아요 수입니다.                                                                          | 10        |
+| shareCount | number            | 공유 수입니다.                                                                            | 1         |
+| updatedAt  | Date    | 포스트를 편집할 때 자동으로 기록됩니다.                                                   |           |
+| createdAt  | Date    | 포스트를 생성할 때 자동으로 기록됩니다.                                                   |           |
 
 <br>
 
