@@ -255,7 +255,7 @@ project-root
 
 ### 1. Create User
 
-**Endpoint:** `POST /`  
+**Endpoint:** `POST /user`  
 **Method:** `POST`  
 **Description:** Create a new user.  
 **Request Body:**
