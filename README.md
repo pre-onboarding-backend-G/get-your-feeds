@@ -160,17 +160,7 @@ project-root
 
 <br>
 
-#### 2. 게시물 생성 :
-
-**Endpoint:** `POST /articles`  
-**Method:** `POST`  
-**Description:** Create a new article.  
-**Request Body:** `CreateArticleDto`  
-**Response:** The content ID of the created article as a string.
-
-<br>
-
-#### 3. 게시물 상세 조회 : 게시물 목록 클릭 시, 사용되는 게시물 상세 내용 조회 API
+#### 2. 게시물 상세 조회 : 게시물 목록 클릭 시, 사용되는 게시물 상세 내용 조회 API
 
 **Endpoint:** `GET /articles/:contentId`  
 
@@ -202,7 +192,7 @@ project-root
 
 <br>
 
-#### 4. 게시물 좋아요 생성 : 게시물 목록 또는 상세에서 게시물 좋아요 클릭 시 사용되는 API
+#### 3. 게시물 좋아요 생성 : 게시물 목록 또는 상세에서 게시물 좋아요 클릭 시 사용되는 API
 
 **Endpoint:** `GET /articles/:contentId`  
 **Method:** `GET`  
@@ -214,7 +204,7 @@ project-root
 
 <br>
 
-#### 5. 게시물 공유 생성 : 게시물 목록 또는 상세에서 공유하기 클릭 시 사용되는 API
+#### 4. 게시물 공유 생성 : 게시물 목록 또는 상세에서 공유하기 클릭 시 사용되는 API
 
 **Endpoint:** `POST /articles/share`  
 
