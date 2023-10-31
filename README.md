@@ -55,9 +55,12 @@ Get Your Feeds는 소셜 미디어 통합 Feed 서비스입니다.
 
 ### 3️⃣ 사용자(User)
 
-| 필드 | 속성 | 설명 | 예시 값 |
-| ---- | ---- | ---- | ------- |
-|      |      |      |         |
+| 필드               | 속성                                              | 설명                     | 예시 값                                        |
+|------------------|-------------------------------------------------|------------------------|----------------------------------------------|
+| email            | `unique: true`                                  | 사용자의 이메일 주소          | "user@example.com"                          |
+| password         |                                                   | 사용자의 비밀번호             | "SecureP@ssw0rd1"                            |
+| connectedServices| `Array of { service: String, accountTag: String }` | 연결된 소셜 미디어 서비스들      | [{ service: "twitter", accountTag: "@user" }] |
+
 
 <br>
 
