@@ -31,13 +31,6 @@ export class UserController {
     return;
   }
 
-  @Get()
-  async getUserByEmail(@Body('email') email: string) {
-    const existingUser = await this.userService.getUserByEmail(email);
-
-    return existingUser.email;
-  }
-
   @UseGuards(JwtAuthGuard)
   @Get('account-tags')
   async getAllAccountTags(@GetUser() user: User): Promise<string[]> {
