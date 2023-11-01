@@ -28,20 +28,20 @@ Get Your Feeds는 소셜 미디어 통합 Feed 서비스입니다.
 
 ## 🛠️ Document 구조
 
-### 1️⃣ 게시글(Article)
+### 1️⃣ 게시물(Article)
 
 | 필드        | 속성            | 설명                                                                                      | 예시 값   |
 | ----------- | --------------- | ----------------------------------------------------------------------------------------- | --------- |
-| content_id  | 문자열          | 이는 포스트가 속한 SNS에서 관리하는 고유 인식 값입니다.                                   |           |
-| type        | 문자열 (열거형) | 파일 객체의 유형입니다. 가능한 값은 "facebook", "twitter", "instagram", "threads" 입니다. | "twitter" |
-| title       | 문자열          | 포스트 제목입니다.                                                                        |           |
-| content     | 문자열          | 이는 포스트의 내용이며 이미지, 비디오 등을 제외한 텍스트만 포함됩니다.                    |           |
-| hashtags    | 아무 값         | 여러 개의 해시태그가 있으므로 미래 검색을 고려하여 설계해 주십시오.                       |           |
-| view_count  | 숫자            | 조회수입니다.                                                                             | 100       |
-| like_count  | 숫자            | 좋아요 수입니다.                                                                          | 10        |
-| share_count | 숫자            | 공유 수입니다.                                                                            | 0         |
-| updated_at  | 날짜 및 시간    | 포스트를 편집할 때 자동으로 기록됩니다.                                                   |           |
-| created_at  | 날짜 및 시간    | 포스트를 생성할 때 자동으로 기록됩니다.                                                   |           |
+| contentId  | string(UUID)          | 이는 포스트가 속한 SNS에서 관리하는 고유 인식 값입니다.                                   |           |
+| type        | enum | 파일 객체의 유형입니다. 가능한 값은 "facebook", "twitter", "instagram", "threads" 입니다. | 'twitter' |
+| title       | string          | 포스트 제목입니다.                                                                        | 'hello, danishop!'          |
+| content     | string          | 이는 포스트의 내용이며 이미지, 비디오 등을 제외한 텍스트만 포함됩니다.                    | 'I visited the danishop'          |
+| hashtags    | string[]         | 여러 개의 해시태그가 있으므로 미래 검색을 고려하여 설계해 주십시오.                       | ['dani', 'danishop']          |
+| viewCount  | number            | 조회수입니다.                                                                             | 100       |
+| likeCount  | number            | 좋아요 수입니다.                                                                          | 10        |
+| shareCount | number            | 공유 수입니다.                                                                            | 1         |
+| updatedAt  | Date    | 포스트를 편집할 때 자동으로 기록됩니다.                                                   |           |
+| createdAt  | Date    | 포스트를 생성할 때 자동으로 기록됩니다.                                                   |           |
 
 <br>
 
@@ -168,29 +168,39 @@ project-root
 
 <br>
 
-#### 2. 게시물 생성 :
+#### 2. 게시물 상세 조회 : 게시물 목록 클릭 시, 사용되는 게시물 상세 내용 조회 API
 
-**Endpoint:** `POST /articles`  
-**Method:** `POST`  
-**Description:** Create a new article.  
-**Request Body:** `CreateArticleDto`  
-**Response:** The content ID of the created article as a string.
+**Endpoint:** `GET /articles/:contentId`  
 
-<br>
-
-#### 3. 게시물 상세 조회 : 게시물 목록 클릭 시, 사용되는 게시물 상세 내용 조회 API
-
-**Endpoint:** `GET /articles/likes/:contentId`  
 **Method:** `GET`  
-**Description:** Send a like to an article by its content ID.  
+
+**Description:** 유저가 게시물을 클릭 시 view_count 가 1 증가하고 게시물의 모든 필드 값을 확인하는데 사용되는 API
+
 **Path Parameters:**
 
-- `contentId`: The content ID of the article.  
-  **Response:** The content ID of the liked article as a string.
+- `contentId`: 게시물의 Content ID.
+
+**Response:** 
+
+- response status 200, `GetArticleDetailResDto`
+
+| field | 속성 | 설명 |예시|
+| --- | --- | --- | --- |
+| contentId | string | 해당 게시물 Content ID |  |
+| title | string | 해당 게시물 제목 | 'NestJS Repository Pattern' |
+| type | string | 해당 게시물 SNS 출처 | 'twitter' |
+| content | string | 해당 게시물 내용 | 'Separation of dependencies is ...' |
+| hashtags | string[] | 해당 게시물의 해시태그들 | ['repository', 'pattern'] |
+| viewCount | number | 해당 게시물의 조회수 | 300 |
+| likeCount | number | 해당 게시물의 좋아요수 | 30 |
+| shareCount | number | 해당 게시물의 공유수 | 10 |
+
+- response status 404 (해당 게시물이 존재하지 않을시)
+
 
 <br>
 
-#### 4. 게시물 좋아요 생성 : 게시물 목록 또는 상세에서 게시물 좋아요 클릭 시 사용되는 API
+#### 3. 게시물 좋아요 생성 : 게시물 목록 또는 상세에서 게시물 좋아요 클릭 시 사용되는 API
 
 **Endpoint:** `GET /articles/:contentId`  
 **Method:** `GET`  
@@ -202,13 +212,24 @@ project-root
 
 <br>
 
-#### 5. 게시물 공유 생성 : 게시물 목록 또는 상세에서 공유하기 클릭 시 사용되는 APIGet Paginated Article List
+#### 4. 게시물 공유 생성 : 게시물 목록 또는 상세에서 공유하기 클릭 시 사용되는 API
 
 **Endpoint:** `POST /articles/share`  
+
 **Method:** `POST`  
-**Description:** Send a share notification for an article by its content ID.  
-**Request Body:** `CreateArticleShareDto`  
-**Response:** None (void).
+
+**Description:** 각 게시물이 관리되는 SNS 별 특정된 API 를 호출하고 성공할 시 (response status 200) 해당 게시물의 share_count가 1 증가
+
+**Request Body:** `CreateArticleShareDto` 
+
+| field | 속성 | 설명 |예시|
+| --- | --- | --- | --- |
+| contentId | string | 해당 게시물 Content ID |  |
+
+**Response:** 
+
+- response status 200, None(void)
+- response status 404 (해당 게시물이 존재하지 않을시)
 
 ---
 
