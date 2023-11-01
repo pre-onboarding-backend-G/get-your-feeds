@@ -20,15 +20,16 @@ Get Your Feeds는 소셜 미디어 통합 Feed 서비스입니다.
 
 ## 🌟 팀원 및 역할 소개
 
-|              고미종               |               추연규                |      이명석      |    송호준     |       이상운       |
-| :-------------------------------: | :---------------------------------: | :--------------: | :-----------: | :----------------: |
-| 게시물 상세 조회 <br> 게시물 공유 | 게시물 목록 조회 <br> 게시물 좋아요 | 게시물 통계 조회 | jwt 토큰 인증 | 유저 비즈니스 로직 |
+|              고미종               |                        추연규                        |      이명석      |    송호준     |       이상운       |
+| :-------------------------------: | :--------------------------------------------------: | :--------------: | :-----------: | :----------------: |
+| 게시물 상세 조회 <br> 게시물 공유 | 게시물 생성 <br> 게시물 목록 조회 <br> 게시물 좋아요 | 게시물 통계 조회 | jwt 토큰 인증 | 유저 비즈니스 로직 |
 
 <br>
 
 ## 🛠️ Document 구조
 
 ### 1️⃣ 게시물(Article)
+
 
 | 필드        | 속성            | 설명                                                                                      | 예시 값   |
 | ----------- | --------------- | ----------------------------------------------------------------------------------------- | --------- |
@@ -163,16 +164,22 @@ project-root
 **Endpoint:** `GET /articles`  
 **Method:** `GET`  
 **Description:** Fetch a paginated list of articles.  
-**Query Parameters:** RequestPaginatedQueryDto (pagination parameters)  
+**Query Parameters:** RequestPaginatedQueryDto (pagination parameters)
+
+- `page`: 게시물의 현재 페이지
+- `perPage`: 게시물의 페이지 항목 수
+- `type`: SNS type (facebook, twiiter, threads, instagram)
+- `hashtag`: 게시물이 가진 해쉬태그 중 하나
+
 **Response:** `Page<GetArticleResDto>`
 
 <br>
 
 #### 2. 게시물 상세 조회 : 게시물 목록 클릭 시, 사용되는 게시물 상세 내용 조회 API
 
-**Endpoint:** `GET /articles/:contentId`  
+**Endpoint:** `GET /articles/:contentId`
 
-**Method:** `GET`  
+**Method:** `GET`
 
 **Description:** 유저가 게시물을 클릭 시 view_count 가 1 증가하고 게시물의 모든 필드 값을 확인하는데 사용되는 API
 
@@ -180,23 +187,22 @@ project-root
 
 - `contentId`: 게시물의 Content ID.
 
-**Response:** 
+**Response:**
 
 - response status 200, `GetArticleDetailResDto`
 
-| field | 속성 | 설명 |예시|
-| --- | --- | --- | --- |
-| contentId | string | 해당 게시물 Content ID |  |
-| title | string | 해당 게시물 제목 | 'NestJS Repository Pattern' |
-| type | string | 해당 게시물 SNS 출처 | 'twitter' |
-| content | string | 해당 게시물 내용 | 'Separation of dependencies is ...' |
-| hashtags | string[] | 해당 게시물의 해시태그들 | ['repository', 'pattern'] |
-| viewCount | number | 해당 게시물의 조회수 | 300 |
-| likeCount | number | 해당 게시물의 좋아요수 | 30 |
-| shareCount | number | 해당 게시물의 공유수 | 10 |
+| field      | 속성     | 설명                     | 예시                                |
+| ---------- | -------- | ------------------------ | ----------------------------------- |
+| contentId  | string   | 해당 게시물 Content ID   |                                     |
+| title      | string   | 해당 게시물 제목         | 'NestJS Repository Pattern'         |
+| type       | string   | 해당 게시물 SNS 출처     | 'twitter'                           |
+| content    | string   | 해당 게시물 내용         | 'Separation of dependencies is ...' |
+| hashtags   | string[] | 해당 게시물의 해시태그들 | ['repository', 'pattern']           |
+| viewCount  | number   | 해당 게시물의 조회수     | 300                                 |
+| likeCount  | number   | 해당 게시물의 좋아요수   | 30                                  |
+| shareCount | number   | 해당 게시물의 공유수     | 10                                  |
 
 - response status 404 (해당 게시물이 존재하지 않을시)
-
 
 <br>
 
@@ -208,28 +214,52 @@ project-root
 **Path Parameters:**
 
 - `contentId`: The content ID of the article.  
-  **Response:** `GetArticleDetailResDto`
+  **Response:** `contentId`
 
 <br>
 
 #### 4. 게시물 공유 생성 : 게시물 목록 또는 상세에서 공유하기 클릭 시 사용되는 API
 
-**Endpoint:** `POST /articles/share`  
+**Endpoint:** `POST /articles/share`
 
-**Method:** `POST`  
+**Method:** `POST`
 
 **Description:** 각 게시물이 관리되는 SNS 별 특정된 API 를 호출하고 성공할 시 (response status 200) 해당 게시물의 share_count가 1 증가
 
-**Request Body:** `CreateArticleShareDto` 
+**Request Body:** `CreateArticleShareDto`
 
-| field | 속성 | 설명 |예시|
-| --- | --- | --- | --- |
-| contentId | string | 해당 게시물 Content ID |  |
+| field     | 속성   | 설명                   | 예시 |
+| --------- | ------ | ---------------------- | ---- |
+| contentId | string | 해당 게시물 Content ID |      |
 
-**Response:** 
+**Response:**
 
 - response status 200, None(void)
 - response status 404 (해당 게시물이 존재하지 않을시)
+
+<br>
+
+#### 4. 게시물 생성 : 게시물 생성시 사용되는 API
+
+**Endpoint:** `POST /articles`
+
+**Method:** `POST`
+
+**Description:** Request Body에 게시물의 title, type, content, hashtags를 입력하고 요청을 보내면 랜덤으로 조회수, 좋아요수, 공유수를 생성
+
+**Request Body:** `CreateArticleDto`
+
+| field    | 속성     | 설명                     | 예시                 |
+| -------- | -------- | ------------------------ | -------------------- |
+| title    | string   | 게시물 제목              | '오늘 TODO list'     |
+| type     | string   | 게시물 SNS 종류          | 'facebook'           |
+| content  | string   | 게시물 내용              | '- 오늘 운동'        |
+| hashtags | string[] | 게시물 여러개의 해시태그 | ['#오운완', '#TODO'] |
+
+**Response:** contentId
+
+- response status 200, None(void)
+- response status 400 (SNS 타입 잘못 입력 시)
 
 ---
 
@@ -339,3 +369,12 @@ project-root
 - 알게된 점 : MongoDB를 사용하는 이유, 장점, NoSQL 모델링 시 유의해야 할 점들에 대해 알게 되었다.
 
 - 개선할 점 : 처음 팀이 구성되고 바로 프로젝트에 들어가다보니 기능 구현을 위한 역할 분담은 되었지만 그외에 많은 것들이 팀장님 어께 위로 얹혀진 것 같아 미안했다 ㅠ. 이제 한 번 프로젝트를 해보았으니 프로젝트를 진행할 때 어떤 역할들이 필요하고 그것들을 각자 잘 분담하면 그 짐을 같이 나눠 짊어질 수 있을 것 같다. 그리고 개인적으로 요구사항 분석을 처음에 제대로 하지 못해, 많은 변경이 생겼다. 처음에는 통계 데이터를 저장할 도큐먼트가 필요 없을 것으로 생각했으나 실제 기능 구현을 위해 요구사항 분석을 해보니 필요했었다. 앞으로 요구사항을 처음에 확실히 분석하고 정리하면 이런 일은 없을 것 같다.
+
+### 연규
+
+- 좋았던 점 : MongoDB를 사용해서 쿼리하고 페이지네이션을 해볼 수 있다는 점에서 좋았고,
+  하나의 API에서 두명이 작업해볼 수 있어서 새로운 경험이였다.
+
+- 알게된 점 : MongoDB에서 쿼리할 때 방법과 nest에서 pagination, query 파라미터 사용 방법에 대해 다시 알게 되었다. git 브랜치로 병합할 때 conflict를 해결하는 방법도 알게 되었다.
+
+- 개선할 점 : 논의하는데 시간이 많이 들어가서 기능을 개발하는데 들어가는 물리적인 시간이 부족했던 것 같다. 효율적인 회의 프로세스로 개선해야할거같고 대화보다는 글이나 그림 정리해서 공유하는 것이 더 빠르게 서로를 이해할 수 있겠다는 생각이 들었다. 희의 전에 그림으로 요구사항을 분석하고 논의하는 것도 중요할 거 같다.
